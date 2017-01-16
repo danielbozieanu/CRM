@@ -32,13 +32,17 @@
         <ul class="sidebar-menu">
             <li class="header">HEADER</li>
             <!-- Optionally, you can add icons to the links -->
-            <li class="<?php if($this->uri->segment(1)=="dashboard"){echo "active";}?>"><?php echo anchor("dashboard/", ' <i class="fa fa-link"></i> Dashboard'); ?></li>
+            <li class="<?php if($this->uri->segment(1)=="dashboard"){echo "active";}?>"><?php echo anchor("dashboard/", ' <i class="fa fa-link"></i> <span>Dashboard</span>'); ?></li>
 
             <li class="treeview <?php if($this->uri->segment(1)=="proiecte"){echo "active";}?>">
-                <?php echo anchor("proiecte/", ' <i class="fa fa-link"></i><span>Proiecte</span> <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span>'); ?>
-<!--                <ul class="treeview-menu">-->
-<!--                    <li>--><?php //echo anchor("proiecte/add", ' <i class="fa fa-link"></i> Adauga'); ?><!--</li>-->
-<!--                </ul>-->
+                <a href="#"><i class="fa fa-link"></i><span>Proiecte</span> <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span></a>
+
+                <ul class="treeview-menu">
+                    <li>
+                        <?php echo anchor("proiecte/", ' <i class="fa fa-link"></i><span>Vizualizare</span> <span class="pull-right-container"></span>'); ?>
+                    </li>
+                    <li><?php echo anchor("proiecte/add", ' <i class="fa fa-link"></i> Adauga'); ?></li>
+                </ul>
             </li>
         </ul>
         <!-- /.sidebar-menu -->

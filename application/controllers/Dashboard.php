@@ -28,11 +28,11 @@ class Dashboard extends Auth_Controller {
             // redirect them to the login page
             redirect('dashboard/login', 'refresh');
         }
-        elseif (!$this->ion_auth->is_admin()) // remove this elseif if you want to enable this for non-admins
-        {
-            // redirect them to the home page because they must be an administrator to view this
-            return show_error('You must be an administrator to view this page.');
-        }
+//        elseif (!$this->ion_auth->is_admin()) // remove this elseif if you want to enable this for non-admins
+//        {
+//            // redirect them to the home page because they must be an administrator to view this
+//            return show_error('You must be an administrator to view this page.');
+//        }
         else
         {
             // set the flash data error message if there is one

@@ -3,6 +3,8 @@ defined('BASEPATH') OR exit('No direct script access allowed');
 
 class Proiecte extends MY_Controller
 {
+    private $limit = 20;
+    private $status ='';
     function __construct()
     {
         parent::__construct();
@@ -11,41 +13,107 @@ class Proiecte extends MY_Controller
         $this->load->library('ion_auth');
         $this->data['current'] = $this->ion_auth->user()->row();
 
+        $this->data['users'] = $this->ion_auth->users()->result();
+        foreach ($this->data['users'] as $k => $user)
+        {
+            $this->data['users'][$k]->groups = $this->ion_auth->get_users_groups($user->id)->result();
+        }
     }
 
     /*
      * Listing of proiecte
      */
-    function index()
+    function index($offset = 0, $order_column = 'id', $order_type = 'asc')
     {
-        $this->data['proiecte'] = $this->Proiecte_model->get_all_proiecte();
+        if (empty($offset)) $offset = 0;
+        if (empty($order_column)) $order_column = 'id';
+        if (empty($order_type)) $order_type = 'asc';
 
-        $projectsCount = sizeof($this->data['proiecte']);
 
+        //load data
+        $proiecte = $this->Proiecte_model->get_all_proiecte($this->limit, $offset, $order_column, $order_type)->result();
+
+        //generate pagination
         $this->load->library('pagination');
-
-        $this->load->helper('url');
-
-        $config['base_url']=site_url('proiecte/page/');
-
-        $config['total_rows']= $projectsCount;
-
-        $config['per_page']=5;
-
+        $config['base_url'] = site_url('proiecte/index/');
+        $config['total_rows'] = $this->Proiecte_model->count_all();
+        $config['per_page'] = $this->limit;
+        $config['uri_segment'] = 3;
+        $config['num_tag_open'] = '<li>';
+        $config['num_tag_close'] = '</li>';
+        $config['cur_tag_open'] = '<li><a href="#">';
+        $config['cur_tag_close'] = '</a></li>';
+        $config['next_tag_open'] = '<li>';
+        $config['next_tag_close'] = '</li>';
+        $config['prev_tag_open'] = '<li>';
+        $config['prev_tag_close'] = '</li>';
+        $config['last_tag_open'] = '<li>';
+        $config['last_tag_close'] = '</li>';
+        $config['first_tag_open'] = '<li>';
+        $config['first_tag_close'] = '</li>';
         $this->pagination->initialize($config);
+        $this->data['pagination'] = $this->pagination->create_links();
 
-        echo $this->pagination->create_links();
+        // generate table data
+        $this->load->library('table');
+        $this->table->set_empty("");
+        $new_order = ($order_type == 'asc' ? 'desc' : 'asc');
+        $template = array(
+            'table_open'  => '<table class="table table-bordered">'
+        );
+
+        $this->table->set_template($template);
+        $this->table->set_heading(
+            '#',
+            anchor('proiecte/index/'.$offset.'/nume/'.$new_order, 'Nume'),
+            anchor('proiecte/index/'.$offset.'/client/'.$new_order, 'Client'),
+            anchor('proiecte/index/'.$offset.'/status/'.$new_order, 'Status'),
+            'Actiuni'
+        );
 
 
-        $this->pagination->initialize($config);
+        $i = 0 + $offset;
 
-        echo $this->pagination->create_links();
+        foreach ($proiecte as $proiect){
 
+            if ( $proiect->status == 1 ){
+                $this->status = '<span class="label label-success">Done</span>';
+            }else{
+                $this->status = '<span class="label label-primary">In work</span>';
+            }
 
+            $this->table->add_row(++$i.'.',
 
+                $proiect->nume,
 
+                $proiect->client,
+
+                $this->status,
+
+                anchor('proiecte/edit/'.$proiect->id,'<i class="fa fa-eye"></i>','class="btn btn-warning btn-xs" data-skin="skin-yellow"')
+
+            );
+
+        }
+
+        $this->data['table'] = $this->table->generate();
+
+        if ($this->uri->segment(3)=='delete_success')
+
+            $this->data['message'] = 'The Data was successfully deleted';
+
+        else if ($this->uri->segment(3)=='add_success')
+
+            $this->data['message'] = 'The Data has been successfully added';
+
+        else
+
+            $this->data['message'] = '';
+
+    // load view
 
         $this->render('auth/proiecte');
+
     }
 
     /*
@@ -53,27 +121,25 @@ class Proiecte extends MY_Controller
      */
     function add()
     {
-        $this->load->library('form_validation');
 
-        $this->form_validation->set_rules('client_email','Client Email','valid_email');
+       if ( isset($_POST) && count($_POST) >0 ){
+           $params = array(
+               'nume' => $this->input->post('nume'),
+               'client' => $this->input->post('client')
+           );
 
-        if($this->form_validation->run())
-        {
-            $params = array(
-                'nume' => $this->input->post('nume'),
-                'client' => $this->input->post('client'),
-                'client_email' => $this->input->post('client_email'),
-                'echipa' => $this->input->post('echipa'),
-                'status' => $this->input->post('status'),
-            );
+           $getUsersProiecte = $this->input->post('usersProiect');
 
-            $proiecte_id = $this->Proiecte_model->add_proiecte($params);
-            redirect('proiecte/index');
-        }
-        else
-        {
-            $this->render('auth/proiecte_add');
-        }
+           $paramsUsersProiecte = array();
+           foreach ( $getUsersProiecte as $item ){
+               array_push($paramsUsersProiecte, $item);
+           }
+
+           $proiecte_id = $this->Proiecte_model->add_proiecte($params, $paramsUsersProiecte);
+           redirect('proiecte/index');
+       }else{
+           $this->render('auth/proiecte_add');
+       }
     }
 
     /*
@@ -95,8 +161,6 @@ class Proiecte extends MY_Controller
                 $params = array(
                     'nume' => $this->input->post('nume'),
                     'client' => $this->input->post('client'),
-                    'client_email' => $this->input->post('client_email'),
-                    'echipa' => $this->input->post('echipa'),
                     'status' => $this->input->post('status'),
                 );
 

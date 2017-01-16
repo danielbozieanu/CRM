@@ -1,13 +1,38 @@
 <?php echo validation_errors(); ?>
+<div class="box box-warning">
+    <div class="box-header with-border">
+        <h2>Vizualizare/editare proiect</h2>
+    </div>
 
-<?php echo form_open('proiecte/edit/'.$proiecte['id']); ?>
+    <div class="box-body">
+        <?php echo form_open('proiecte/edit/'.$proiecte['id']); ?>
 
-    <div>Nume : <textarea name="nume"><?php echo ($this->input->post('nume') ? $this->input->post('nume') : $proiecte['nume']); ?></textarea></div>
-    <div>Client : <input type="text" name="client" value="<?php echo ($this->input->post('client') ? $this->input->post('client') : $proiecte['client']); ?>" /></div>
-    <div>Client Email : <input type="text" name="client_email" value="<?php echo ($this->input->post('client_email') ? $this->input->post('client_email') : $proiecte['client_email']); ?>" /></div>
-    <div>Echipa : <textarea name="echipa"><?php echo ($this->input->post('echipa') ? $this->input->post('echipa') : $proiecte['echipa']); ?></textarea></div>
-    <div>Status : <input type="text" name="status" value="<?php echo ($this->input->post('status') ? $this->input->post('status') : $proiecte['status']); ?>" /></div>
+        <div class="form-group">
+            <label for="nume">Nume poiect:</label>
+            <input name="nume" class="form-control" value="<?php echo ($this->input->post('nume') ? $this->input->post('nume') : $proiecte['nume']); ?>">
+        </div>
 
-    <button type="submit">Save</button>
+        <div class="form-group">
+            <label for="nume">Client:</label>
+            <select name="client" class="form-control">
+                <option><?php echo ($this->input->post('client') ? $this->input->post('client') : $proiecte['client']); ?></option>
+            </select>
+        </div>
 
-<?php echo form_close(); ?>
+        <?php if ($this->ion_auth->is_admin()): ?>
+
+            <div class="form-group">
+                <label for="status">Status</label>
+                <select name="status" class="form-control" >
+                    <option value="0">In work</option>
+                    <option value="1">Done</option>
+                </select>
+            </div>
+
+        <?php endif; ?>
+        <button class="btn btn-block btn-success" type="submit">Save</button>
+
+        <?php echo form_close(); ?>
+
+    </div>
+</div>

@@ -6,6 +6,10 @@
 
 class Proiecte_model extends CI_Model
 {
+
+    private $primary_key='id';
+    private $table_name='proiecte';
+
     function __construct()
     {
         parent::__construct();
@@ -22,18 +26,43 @@ class Proiecte_model extends CI_Model
     /*
      * Get all proiecte
      */
-    function get_all_proiecte()
+    function get_all_proiecte($limit=5, $offset=0, $order_column='', $order_type='asc')
     {
-        return $this->db->get('proiecte')->result_array();
+//        return $this->db->get('proiecte')->result_array();
+
+        if(empty($order_column)||empty($order_type)){
+            $this->db->order_by($this->primary_key,'asc');
+        }else {
+            $this->db->order_by($order_column,$order_type);
+            return $this->db->get($this->table_name, $limit, $offset);
+        }
+
+    }
+
+    /*
+     * Count all
+     */
+    function count_all(){
+        return $this->db->count_all($this->table_name);
     }
 
     /*
      * function to add new proiecte
      */
-    function add_proiecte($params)
+    function add_proiecte($params, $usersProiecte)
     {
         $this->db->insert('proiecte',$params);
-        return $this->db->insert_id();
+
+        $insert_id = $this->db->insert_id();
+
+        foreach ( $usersProiecte as $item ){
+            $this->db->insert('users_proiecte', array(
+                'id_user' => $item,
+                'id_proiect' => $insert_id
+            ));
+        }
+
+        return $insert_id;
     }
 
     /*
