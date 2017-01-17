@@ -7,7 +7,7 @@
 class Proiecte_model extends CI_Model
 {
 
-    private $primary_key='id';
+    private $primary_key='id_proiect';
     private $table_name='proiecte';
 
     function __construct()
@@ -20,7 +20,7 @@ class Proiecte_model extends CI_Model
      */
     function get_proiecte($id)
     {
-        return $this->db->get_where('proiecte',array('id'=>$id))->row_array();
+        return $this->db->get_where('proiecte',array('id_proiect'=>$id))->row_array();
     }
 
     /*
@@ -70,7 +70,7 @@ class Proiecte_model extends CI_Model
      */
     function update_proiecte($id,$params)
     {
-        $this->db->where('id',$id);
+        $this->db->where('id_proiect',$id);
         $response = $this->db->update('proiecte',$params);
         if($response)
         {
@@ -87,7 +87,7 @@ class Proiecte_model extends CI_Model
      */
     function delete_proiecte($id)
     {
-        $response = $this->db->delete('proiecte',array('id'=>$id));
+        $response = $this->db->delete('proiecte',array('id_proiect'=>$id));
         if($response)
         {
             return "proiecte deleted successfully";
@@ -96,5 +96,17 @@ class Proiecte_model extends CI_Model
         {
             return "Error occuring while deleting proiecte";
         }
+    }
+
+    /*
+     * Get the client of project.
+     */
+    function getClient(){
+        $this->db->select('*');
+        $this->db->from('clienti');
+        $this->db->join('proiecte', 'proiecte.client = clienti.id_client');
+        $query = $this->db->get();
+
+        return $query;
     }
 }

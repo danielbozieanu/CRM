@@ -11,6 +11,7 @@ class MY_Controller extends CI_Controller {
         $this->data['page_description'] = 'CI_App';
         $this->data['before_closing_head'] = '';
         $this->data['before_closing_body'] = '';
+        $this->data['current'] = $this->ion_auth->user()->row();
     }
 
     protected function render($the_view = NULL, $template = 'login_master')

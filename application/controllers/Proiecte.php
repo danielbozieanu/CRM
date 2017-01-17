@@ -11,7 +11,6 @@ class Proiecte extends MY_Controller
         $this->load->model('Proiecte_model');
         $this->load->helper(array('url','language'));
         $this->load->library('ion_auth');
-        $this->data['current'] = $this->ion_auth->user()->row();
 
         $this->data['users'] = $this->ion_auth->users()->result();
         foreach ($this->data['users'] as $k => $user)
@@ -23,7 +22,7 @@ class Proiecte extends MY_Controller
     /*
      * Listing of proiecte
      */
-    function index($offset = 0, $order_column = 'id', $order_type = 'asc')
+    function index($offset = 0, $order_column = 'id_proiect', $order_type = 'asc')
     {
         if (empty($offset)) $offset = 0;
         if (empty($order_column)) $order_column = 'id';
@@ -64,11 +63,15 @@ class Proiecte extends MY_Controller
 
         $this->table->set_template($template);
         $this->table->set_heading(
-            '#',
-            anchor('proiecte/index/'.$offset.'/nume/'.$new_order, 'Nume'),
+            anchor('proiecte/index/'.$offset.'/id_proiect/'.$new_order,'#'),
+            anchor('proiecte/index/'.$offset.'/nume_proiect/'.$new_order, 'Nume'),
             anchor('proiecte/index/'.$offset.'/client/'.$new_order, 'Client'),
-            anchor('proiecte/index/'.$offset.'/status/'.$new_order, 'Status'),
-            'Actiuni'
+            anchor('proiecte/index/'.$offset.'/status_proiect/'.$new_order, 'Status'),
+            [
+                'data' => 'Actiuni',
+                'colspan' => 2,
+                'style' => 'width:5%'
+            ]
         );
 
 
@@ -76,21 +79,27 @@ class Proiecte extends MY_Controller
 
         foreach ($proiecte as $proiect){
 
-            if ( $proiect->status == 1 ){
+            //Client on the project
+            $this->data['project_client'] = $this->getClientProj($proiect->id_proiect);
+
+            if ( $proiect->status_proiect == 1 ){
                 $this->status = '<span class="label label-success">Done</span>';
             }else{
                 $this->status = '<span class="label label-primary">In work</span>';
             }
 
-            $this->table->add_row(++$i.'.',
 
-                $proiect->nume,
+            $this->table->add_row($proiect->id_proiect.'.',
 
-                $proiect->client,
+                $proiect->nume_proiect,
+
+                $this->data['project_client'],
 
                 $this->status,
 
-                anchor('proiecte/edit/'.$proiect->id,'<i class="fa fa-eye"></i>','class="btn btn-warning btn-xs" data-skin="skin-yellow"')
+                anchor('proiecte/edit/'.$proiect->id_proiect,'<i class="fa fa-eye"></i>','class="btn btn-warning btn-xs" data-skin="skin-yellow"'),
+
+                anchor('proiecte/remove/'.$proiect->id_proiect,'<i class="fa fa-trash-o"></i>','class="btn btn-danger btn-xs" data-skin="skin-yellow"')
 
             );
 
@@ -121,10 +130,16 @@ class Proiecte extends MY_Controller
      */
     function add()
     {
+        $this->data['avail_clients'] = $this->getAllClients();
 
-       if ( isset($_POST) && count($_POST) >0 ){
+        $this->load->library('form_validation');
+
+        $this->form_validation->set_rules('client','Client','required');
+        $this->form_validation->set_rules('nume','Nume','required');
+
+       if ( isset($_POST) && count($_POST) >0 && $this->form_validation->run() ){
            $params = array(
-               'nume' => $this->input->post('nume'),
+               'nume_proiect' => $this->input->post('nume'),
                'client' => $this->input->post('client')
            );
 
@@ -147,21 +162,24 @@ class Proiecte extends MY_Controller
      */
     function edit($id)
     {
+        //tabela de legatura dintre programatori si proiecte
+        $this->data['queryUsersProiecte'] = $this->db->get('users_proiecte')->result();
+
         // check if the proiecte exists before trying to edit it
         $proiecte = $this->Proiecte_model->get_proiecte($id);
 
-        if(isset($proiecte['id']))
+        //Afisare client
+        $this->data['project_client'] = $this->getClientProj($proiecte['id_proiect']);
+
+        if(isset($proiecte['id_proiect']) && $this->ion_auth->is_admin())
         {
-            $this->load->library('form_validation');
 
-            $this->form_validation->set_rules('client_email','Client Email','valid_email');
-
-            if($this->form_validation->run())
+            if ( isset($_POST) && count($_POST) >0 )
             {
                 $params = array(
-                    'nume' => $this->input->post('nume'),
+                    'nume_proiect' => $this->input->post('nume'),
                     'client' => $this->input->post('client'),
-                    'status' => $this->input->post('status'),
+                    'status_proiect' => $this->input->post('status'),
                 );
 
                 $this->Proiecte_model->update_proiecte($id,$params);
@@ -175,7 +193,7 @@ class Proiecte extends MY_Controller
             }
         }
         else
-            show_error('The proiecte you are trying to edit does not exist.');
+            show_error('The proiecte you are trying to edit does not exist or you are not administrator.');
     }
 
     /*
@@ -186,18 +204,48 @@ class Proiecte extends MY_Controller
         $proiecte = $this->Proiecte_model->get_proiecte($id);
 
         // check if the proiecte exists before trying to delete it
-        if(isset($proiecte['id']))
+        if(isset($proiecte['id_proiect']) && $this->ion_auth->is_admin())
         {
             $this->Proiecte_model->delete_proiecte($id);
             redirect('proiecte/index');
         }
         else
-            show_error('The proiecte you are trying to delete does not exist.');
+            show_error('The proiecte you are trying to delete does not exist or you are not administrator.');
     }
+
+    /*
+     * Render page
+     */
 
     protected function render($the_view = NULL, $template = 'master')
     {
         parent::render($the_view, $template);
     }
 
+    //Return the client for actual project
+    protected function getClientProj($projId){
+        $clienti = $this->Proiecte_model->getClient()->result();
+
+        if (isset($projId)){
+            foreach ( $clienti as $client ){
+                if ($projId == $client->id_proiect){
+                    return $client->nume_client;
+                }
+            }
+        }
+    }
+
+    //Return all available clients
+   function getAllClients(){
+        if (empty($offset)) $offset = 0;
+        if (empty($order_column)) $order_column = 'id_client';
+        if (empty($order_type)) $order_type = 'asc';
+
+       $this->load->model('Clienti_model');
+
+       $availableClients = $this->Clienti_model->get_all_clienti($this->limit, $offset, $order_column, $order_type)->result();
+
+       return $availableClients;
+
+    }
 }

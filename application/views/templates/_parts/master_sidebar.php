@@ -38,10 +38,32 @@
                 <a href="#"><i class="fa fa-link"></i><span>Proiecte</span> <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span></a>
 
                 <ul class="treeview-menu">
-                    <li>
+                    <li class="<?php if($this->uri->segment(1)=="proiecte" && $this->uri->segment(2)== NULL){echo "active";}?>">
                         <?php echo anchor("proiecte/", ' <i class="fa fa-link"></i><span>Vizualizare</span> <span class="pull-right-container"></span>'); ?>
                     </li>
-                    <li><?php echo anchor("proiecte/add", ' <i class="fa fa-link"></i> Adauga'); ?></li>
+
+                    <?php if ($this->ion_auth->is_admin()): ?>
+                    <li class="<?php if($this->uri->segment(2)=="add"){echo "active";}?>">
+                        <?php echo anchor("proiecte/add", ' <i class="fa fa-link"></i> Adauga'); ?>
+                    </li>
+                    <?php endif; ?>
+                </ul>
+            </li>
+
+            <li class="treeview <?php if($this->uri->segment(1)=="clienti"){echo "active";}?>">
+                <a href="#"><i class="fa fa-link"></i><span>Clienti</span> <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span></a>
+
+                <ul class="treeview-menu">
+
+                    <li class="<?php if($this->uri->segment(1)=="clienti" && $this->uri->segment(2)== NULL){echo "active";}?>">
+                        <?php echo anchor("clienti/", ' <i class="fa fa-link"></i><span>Vizualizare</span> <span class="pull-right-container"></span>'); ?>
+                    </li>
+
+                    <?php if ($this->ion_auth->is_admin()): ?>
+                        <li class="<?php if($this->uri->segment(2)=="add"){echo "active";}?>">
+                            <?php echo anchor("clienti/add", ' <i class="fa fa-link"></i> Adauga'); ?>
+                        </li>
+                    <?php endif; ?>
                 </ul>
             </li>
         </ul>
