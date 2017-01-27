@@ -1,13 +1,13 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Dashboard extends Auth_Controller {
+class Users extends Auth_Controller {
 
     public function __construct()
     {
         parent::__construct();
-        $this->data['page_title'] = 'CRM LOW - Dashboard';
-        $this->data['page_description'] = 'Dashboard';
+        $this->data['page_title'] = 'CRM LOW - Users';
+        $this->data['page_description'] = 'Users';
         $this->data['current'] = $this->ion_auth->user()->row();
         $this->load->database();
         $this->load->library(array('ion_auth','form_validation'));
@@ -26,7 +26,7 @@ class Dashboard extends Auth_Controller {
         if (!$this->ion_auth->logged_in())
         {
             // redirect them to the login page
-            redirect('dashboard/login', 'refresh');
+            redirect('users/login', 'refresh');
         }
 //        elseif (!$this->ion_auth->is_admin()) // remove this elseif if you want to enable this for non-admins
 //        {
@@ -57,7 +57,7 @@ class Dashboard extends Auth_Controller {
 
         if (!$this->ion_auth->logged_in() || !$this->ion_auth->is_admin())
         {
-            redirect('dashboard', 'refresh');
+            redirect('users', 'refresh');
         }
 
         $tables = $this->config->item('tables','ion_auth');
@@ -99,7 +99,7 @@ class Dashboard extends Auth_Controller {
             // check to see if we are creating the user
             // redirect them back to the admin page
             $this->session->set_flashdata('message', $this->ion_auth->messages());
-            redirect("dashboard", 'refresh');
+            redirect("users", 'refresh');
         }
         else
         {
@@ -112,48 +112,56 @@ class Dashboard extends Auth_Controller {
                 'id'    => 'first_name',
                 'type'  => 'text',
                 'value' => $this->form_validation->set_value('first_name'),
+                'class' => 'form-control'
             );
             $this->data['last_name'] = array(
                 'name'  => 'last_name',
                 'id'    => 'last_name',
                 'type'  => 'text',
                 'value' => $this->form_validation->set_value('last_name'),
+                'class' => 'form-control'
             );
             $this->data['identity'] = array(
                 'name'  => 'identity',
                 'id'    => 'identity',
                 'type'  => 'text',
                 'value' => $this->form_validation->set_value('identity'),
+                'class' => 'form-control'
             );
             $this->data['email'] = array(
                 'name'  => 'email',
                 'id'    => 'email',
                 'type'  => 'text',
                 'value' => $this->form_validation->set_value('email'),
+                'class' => 'form-control'
             );
             $this->data['company'] = array(
                 'name'  => 'company',
                 'id'    => 'company',
                 'type'  => 'text',
                 'value' => $this->form_validation->set_value('company'),
+                'class' => 'form-control'
             );
             $this->data['phone'] = array(
                 'name'  => 'phone',
                 'id'    => 'phone',
                 'type'  => 'text',
                 'value' => $this->form_validation->set_value('phone'),
+                'class' => 'form-control'
             );
             $this->data['password'] = array(
                 'name'  => 'password',
                 'id'    => 'password',
                 'type'  => 'password',
                 'value' => $this->form_validation->set_value('password'),
+                'class' => 'form-control'
             );
             $this->data['password_confirm'] = array(
                 'name'  => 'password_confirm',
                 'id'    => 'password_confirm',
                 'type'  => 'password',
                 'value' => $this->form_validation->set_value('password_confirm'),
+                'class' => 'form-control'
             );
 
             $this->render('auth/create_user');
@@ -167,7 +175,7 @@ class Dashboard extends Auth_Controller {
 
         if (!$this->ion_auth->logged_in() || (!$this->ion_auth->is_admin() && !($this->ion_auth->user()->row()->id == $id)))
         {
-            redirect('dashboard', 'refresh');
+            redirect('users', 'refresh');
         }
 
         $user = $this->ion_auth->user($id)->row();
@@ -236,7 +244,7 @@ class Dashboard extends Auth_Controller {
                     $this->session->set_flashdata('message', $this->ion_auth->messages() );
                     if ($this->ion_auth->is_admin())
                     {
-                        redirect('dashboard', 'refresh');
+                        redirect('users', 'refresh');
                     }
                     else
                     {
@@ -250,7 +258,7 @@ class Dashboard extends Auth_Controller {
                     $this->session->set_flashdata('message', $this->ion_auth->errors() );
                     if ($this->ion_auth->is_admin())
                     {
-                        redirect('dashboard', 'refresh');
+                        redirect('users', 'refresh');
                     }
                     else
                     {
@@ -278,34 +286,40 @@ class Dashboard extends Auth_Controller {
             'id'    => 'first_name',
             'type'  => 'text',
             'value' => $this->form_validation->set_value('first_name', $user->first_name),
+            'class' => 'form-control'
         );
         $this->data['last_name'] = array(
             'name'  => 'last_name',
             'id'    => 'last_name',
             'type'  => 'text',
             'value' => $this->form_validation->set_value('last_name', $user->last_name),
+            'class' => 'form-control'
         );
         $this->data['company'] = array(
             'name'  => 'company',
             'id'    => 'company',
             'type'  => 'text',
             'value' => $this->form_validation->set_value('company', $user->company),
+            'class' => 'form-control'
         );
         $this->data['phone'] = array(
             'name'  => 'phone',
             'id'    => 'phone',
             'type'  => 'text',
             'value' => $this->form_validation->set_value('phone', $user->phone),
+            'class' => 'form-control'
         );
         $this->data['password'] = array(
             'name' => 'password',
             'id'   => 'password',
-            'type' => 'password'
+            'type' => 'password',
+            'class' => 'form-control'
         );
         $this->data['password_confirm'] = array(
             'name' => 'password_confirm',
             'id'   => 'password_confirm',
-            'type' => 'password'
+            'type' => 'password',
+            'class' => 'form-control'
         );
 
         $this->render('auth/edit_user');
@@ -318,7 +332,7 @@ class Dashboard extends Auth_Controller {
 
         if (!$this->ion_auth->logged_in() || !$this->ion_auth->is_admin())
         {
-            redirect('dashboard', 'refresh');
+            redirect('users', 'refresh');
         }
 
         // validate form input
@@ -332,7 +346,7 @@ class Dashboard extends Auth_Controller {
                 // check to see if we are creating the group
                 // redirect them back to the admin page
                 $this->session->set_flashdata('message', $this->ion_auth->messages());
-                redirect("dashboard", 'refresh');
+                redirect("users", 'refresh');
             }
         }
         else
@@ -364,14 +378,14 @@ class Dashboard extends Auth_Controller {
         // bail if no group id given
         if(!$id || empty($id))
         {
-            redirect('dashboard', 'refresh');
+            redirect('users', 'refresh');
         }
 
         $this->data['title'] = $this->lang->line('edit_group_title');
 
         if (!$this->ion_auth->logged_in() || !$this->ion_auth->is_admin())
         {
-            redirect('dashboard', 'refresh');
+            redirect('users', 'refresh');
         }
 
         $group = $this->ion_auth->group($id)->row();
@@ -393,7 +407,7 @@ class Dashboard extends Auth_Controller {
                 {
                     $this->session->set_flashdata('message', $this->ion_auth->errors());
                 }
-                redirect("dashboard", 'refresh');
+                redirect("users", 'refresh');
             }
         }
 
@@ -464,7 +478,7 @@ class Dashboard extends Auth_Controller {
             }
 
             // redirect them back to the auth page
-            redirect('dashboard', 'refresh');
+            redirect('users', 'refresh');
         }
     }
 
@@ -484,13 +498,13 @@ class Dashboard extends Auth_Controller {
         {
             // redirect them to the auth page
             $this->session->set_flashdata('message', $this->ion_auth->messages());
-            redirect("dashboard", 'refresh');
+            redirect("users", 'refresh');
         }
         else
         {
             // redirect them to the forgot password page
             $this->session->set_flashdata('message', $this->ion_auth->errors());
-            redirect("dashboard/forgot_password", 'refresh');
+            redirect("users/forgot_password", 'refresh');
         }
     }
 

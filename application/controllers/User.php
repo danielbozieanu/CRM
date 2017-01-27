@@ -31,7 +31,7 @@ class User extends MY_Controller {
             $remember = (bool) $this->input->post('remember');
             if ($this->ion_auth->login($this->input->post('username'), $this->input->post('password'), $remember))
             {
-                redirect('dashboard');
+                redirect('/');
             }
             else
             {

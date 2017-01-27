@@ -1,5 +1,3 @@
-<!--<h1>--><?php //echo lang('index_heading');?><!--</h1>-->
-<!--<p>--><?php //echo lang('index_subheading');?><!--</p>-->
 <?php if($message != NULL) {?>
 <div class="alert alert-success alert-dismissible">
 	<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
@@ -43,11 +41,11 @@
 							<td><?php echo htmlspecialchars($user->email,ENT_QUOTES,'UTF-8');?></td>
 							<td>
 								<?php foreach ($user->groups as $group):?>
-									<?php echo anchor("dashboard/edit_group/".$group->id, htmlspecialchars($group->name,ENT_QUOTES,'UTF-8')) ;?><br />
+									<?php echo anchor("users/edit_group/".$group->id, htmlspecialchars($group->name,ENT_QUOTES,'UTF-8')) ;?><br />
 								<?php endforeach?>
 							</td>
-							<td><?php echo ($user->active) ? anchor("dashboard/deactivate/".$user->id, '<span class="label label-success">'.lang('index_active_link').'</span>') : anchor("dashboard/activate/". $user->id, '<span class="label label-danger">'.lang('index_inactive_link').'</span>');?></td>
-							<td><?php echo anchor("dashboard/edit_user/".$user->id, 'Edit') ;?></td>
+							<td><?php echo ($user->active) ? anchor("users/deactivate/".$user->id, '<span class="label label-success">'.lang('index_active_link').'</span>') : anchor("users/activate/". $user->id, '<span class="label label-danger">'.lang('index_inactive_link').'</span>');?></td>
+							<td><?php echo anchor("users/edit_user/".$user->id, 'Edit') ;?></td>
 						</tr>
 					<?php endforeach;?>
 					</tbody></table>
@@ -58,4 +56,4 @@
 	</div>
 </div>
 
-<p><?php echo anchor('dashboard/create_user', lang('index_create_user_link'))?> | <?php echo anchor('dashboard/create_group', lang('index_create_group_link'))?></p>
+<p><?php echo anchor('users/create_user', lang('index_create_user_link'))?> | <?php echo anchor('users/create_group', lang('index_create_group_link'))?></p>

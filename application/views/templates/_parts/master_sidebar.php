@@ -32,36 +32,36 @@
         <ul class="sidebar-menu">
             <li class="header">HEADER</li>
             <!-- Optionally, you can add icons to the links -->
-            <li class="<?php if($this->uri->segment(1)=="dashboard"){echo "active";}?>"><?php echo anchor("dashboard/", ' <i class="fa fa-link"></i> <span>Dashboard</span>'); ?></li>
+            <li class="<?php if($this->uri->segment(1)=="users"){echo "active";}?>"><?php echo anchor("users/", ' <i class="fa fa-link"></i> <span>Users</span>'); ?></li>
 
-            <li class="treeview <?php if($this->uri->segment(1)=="proiecte"){echo "active";}?>">
-                <a href="#"><i class="fa fa-link"></i><span>Proiecte</span> <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span></a>
+            <li class="treeview <?php if($this->uri->segment(1)=="projects"){echo "active";}?>">
+                <a href="#"><i class="fa fa-link"></i><span>Projects</span> <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span></a>
 
                 <ul class="treeview-menu">
-                    <li class="<?php if($this->uri->segment(1)=="proiecte" && $this->uri->segment(2)== NULL){echo "active";}?>">
-                        <?php echo anchor("proiecte/", ' <i class="fa fa-link"></i><span>Vizualizare</span> <span class="pull-right-container"></span>'); ?>
+                    <li class="<?php if($this->uri->segment(1)=="projects" && $this->uri->segment(2)== NULL){echo "active";}?>">
+                        <?php echo anchor("projects/", ' <i class="fa fa-link"></i><span>View</span> <span class="pull-right-container"></span>'); ?>
                     </li>
 
                     <?php if ($this->ion_auth->is_admin()): ?>
                     <li class="<?php if($this->uri->segment(2)=="add"){echo "active";}?>">
-                        <?php echo anchor("proiecte/add", ' <i class="fa fa-link"></i> Adauga'); ?>
+                        <?php echo anchor("projects/add", ' <i class="fa fa-link"></i> Add new'); ?>
                     </li>
                     <?php endif; ?>
                 </ul>
             </li>
 
-            <li class="treeview <?php if($this->uri->segment(1)=="clienti"){echo "active";}?>">
-                <a href="#"><i class="fa fa-link"></i><span>Clienti</span> <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span></a>
+            <li class="treeview <?php if($this->uri->segment(1)=="form"){echo "active";}?>">
+                <a href="#"><i class="fa fa-link"></i><span>Forms</span> <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span></a>
 
                 <ul class="treeview-menu">
 
-                    <li class="<?php if($this->uri->segment(1)=="clienti" && $this->uri->segment(2)== NULL){echo "active";}?>">
-                        <?php echo anchor("clienti/", ' <i class="fa fa-link"></i><span>Vizualizare</span> <span class="pull-right-container"></span>'); ?>
+                    <li class="<?php if($this->uri->segment(1)=="form" && $this->uri->segment(2)== NULL){echo "active";}?>">
+                        <?php echo anchor("form/", ' <i class="fa fa-link"></i><span>View</span> <span class="pull-right-container"></span>'); ?>
                     </li>
 
                     <?php if ($this->ion_auth->is_admin()): ?>
                         <li class="<?php if($this->uri->segment(2)=="add"){echo "active";}?>">
-                            <?php echo anchor("clienti/add", ' <i class="fa fa-link"></i> Adauga'); ?>
+                            <?php echo anchor("form/add", ' <i class="fa fa-link"></i> Add new'); ?>
                         </li>
                     <?php endif; ?>
                 </ul>

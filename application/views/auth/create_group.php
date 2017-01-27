@@ -3,7 +3,7 @@
 
 <div id="infoMessage"><?php echo $message;?></div>
 
-<?php echo form_open("dashboard/create_group");?>
+<?php echo form_open("users/create_group");?>
 
       <p>
             <?php echo lang('create_group_name_label', 'group_name');?> <br />

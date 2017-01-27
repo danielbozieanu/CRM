@@ -6,19 +6,20 @@
                 <h3 class="box-title">Adauga un proiect nou</h3>
             </div>
             <?php echo validation_errors(); ?>
-            <?php echo form_open('proiecte/add'); ?>
+            <?php echo form_open('projects/add'); ?>
                 <div class="box-body">
                     <div class="form-group">
                         <label for="nume">Nume proiect</label>
-                        <input class="form-control" name="nume" value="<?php echo $this->input->post('nume'); ?>"/>
+                        <input class="form-control" name="project_name" value="<?php echo $this->input->post('project_name'); ?>"/>
                     </div>
 
                     <div class="form-group">
-                        <label for="client">Client</label>
-                        <select name="client" class="form-control">
-                            <?php foreach ( $avail_clients as $ac): ?>
-                                <option value="<?php echo $ac->id_client; ?>">
-                                <?php echo $ac->nume_client; ?>
+                        <label for="project_client">Client</label>
+                        <select name="project_client" class="form-control">
+                            <option value="0">---SELECT CLIENT---</option>
+                            <?php foreach ( $clients as $client): ?>
+                                <option value="<?php echo $client->id; ?>">
+                                <?php echo $client->first_name; ?>
                                 </option>
                             <?php endforeach; ?>
                         </select>
@@ -35,7 +36,7 @@
                                             <?php if ( $group->id == 5 ){ ?>
                                                 <div class="checkbox">
                                                     <label>
-                                                        <input type="checkbox" name="usersProiect[]" value="<?php echo $user->id; ?>">
+                                                        <input type="checkbox" name="developersToProject[]" value="<?php echo $user->id; ?>">
                                                         <?php echo $user->first_name.' '.$user->last_name; ?>
                                                     </label>
                                                 </div>

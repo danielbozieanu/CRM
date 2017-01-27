@@ -1,20 +1,20 @@
 <?php echo validation_errors(); ?>
 <div class="box box-warning">
     <div class="box-header with-border">
-        <h2>Vizualizare/editare proiect</h2>
+        <h2>View/edit project</h2>
     </div>
 
     <div class="box-body">
-        <?php echo form_open('proiecte/edit/'.$proiecte['id_proiect']); ?>
+        <?php echo form_open('projects/edit/'.$projects['project_id']); ?>
         <div class="form-group">
-            <label for="nume">Nume poiect:</label>
-            <input name="nume" class="form-control" value="<?php echo ($this->input->post('nume') ? $this->input->post('nume') : $proiecte['nume_proiect']); ?>">
+            <label for="nume">Project name:</label>
+            <input name="nume" class="form-control" value="<?php echo ($this->input->post('nume') ? $this->input->post('nume') : $projects['project_name']); ?>">
         </div>
 
         <div class="form-group">
             <label for="nume">Client:</label>
             <select disabled name="client" class="form-control">
-                <option><?php echo ($this->input->post('client') ? $this->input->post('client') : $project_client) ?></option>
+                <option><?php echo ($this->input->post('project_client') ? $this->input->post('project_client') : $this->ion_auth->user($projects['project_client']))->row()->first_name;  ?></option>
             </select>
         </div>
 
@@ -31,14 +31,13 @@
         <?php endif; ?>
 
         <div class="form-group">
-            <label for="status">Echipa:</label>
+            <label for="status">Developers team:</label>
             <ol>
-                <?php foreach ($queryUsersProiecte as $userWorking): ?>
-                    <?php foreach ($users as $user):?>
-                        <?php if ( ($userWorking->id_proiect == $proiecte['id_proiect']) && ($userWorking->id_user == $user->id) ): ?>
-                            <li><?php echo $user->first_name; ?></li>
-                        <?php endif; ?>
-                    <?php endforeach; ?>
+                <?php foreach($developersToProject as $developer): ?>
+                    <?php $userAsDeveloper = $this->ion_auth->user($developer->id_user)->row(); ?>
+                    <li>
+                        <?php echo $userAsDeveloper->first_name; ?>
+                    </li>
                 <?php endforeach; ?>
             </ol>
         </div>
