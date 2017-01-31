@@ -20,6 +20,15 @@ class Form_model extends CI_Model
     }
 
     /*
+     * Get form by project id
+     */
+    function get_project_form($project_id)
+    {
+        return $this->db->get_where('forms',array('form_project'=>$project_id))->row_array();
+    }
+
+
+    /*
      * Get all forms
      */
     function get_all_forms()
@@ -30,28 +39,29 @@ class Form_model extends CI_Model
     /*
      * function to add new form
      */
-    function add_form($params, $q, $a, $nr)
+    function add_form($params, $q, $a, $qId, $qType)
     {
+
         $this->db->insert('forms',$params);
         $formId = $this->db->insert_id();
 
+        $questionsCount = count($qId);
         //Insert data in tables
-        foreach ($q as $qItem){
+        foreach ($q as $qkey => $qItem){
             $this->db->insert('questions', array(
                 'question_label' => $qItem,
-                'question_form' => $formId
+                'question_form' => $formId,
+                'question_type' => $qType[$qkey]
             ));
-
+//        var_dump($qkey);
             $questId = $this->db->insert_id();
 
-            foreach( $nr as $nrItem){
-                for ( $i=0; $i<$nrItem; $i++){
-                    foreach($a as $aItem){
-                        $this->db->insert('answers', array(
-                            'ans_value' => $aItem,
-                            'ans_question' => $questId
-                        ));
-                    }
+            for($i=0; $i<$questionsCount; $i++){
+                if ($qId[$i]==$qkey){
+                    $this->db->insert('answers', array(
+                        'ans_question' => $questId,
+                        'ans_value' => $a[$i]
+                    ));
                 }
             }
         }

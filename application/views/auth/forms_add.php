@@ -19,17 +19,20 @@
             <div class="form-group">
                 <label for="form_project">Select project</label>
                 <select name="form_project" class="form-control">
-                        <option value=""></option>
+                        <option value="">--- project ---</option>
                         <?php
                         foreach($all_projects as $project)
                         {
-                            $selected = ($project['project_id'] == $this->input->post('form_project')) ? ' selected="selected"' : null;
+                            if ( $project['project_status'] != 0 ){
+                                $selected = ($project['project_id'] == $this->input->post('form_project')) ? ' selected="selected"' : null;
+                                echo '<option value="'.$project['project_id'].'" '.$selected.'>'.$project['project_name'].'</option>';
+                            }
 
-                            echo '<option value="'.$project['project_id'].'" '.$selected.'>'.$project['project_name'].'</option>';
                         }
                         ?>
                     </select>
             </div>
+
         </div>
 
 
@@ -40,31 +43,42 @@
             </div>
 
         <div class="box-body">
-            <div class="questions" id="questionsWrapper">
-
-                <div id="app">
-                    <div class="form-group" v-for="(question, index) in questions">
-                        <label for="question1">Question</label>
-                        <input type="text" placeholder="Question" class="form-control" name="question[]" v-bind:id="question.id" >
-                        <select name="questiondNumber[]" id="">
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                        </select>
-
-                        <input v-for="(answer, index) in question.answers" type="text" placeholder="Answer" class="form-control" name="answers[]" >
-                        <button v-on:click="addAnswer(question)" type="button" class="btn btn-app">
-                            <i class="fa fa-plus"></i>
-                            Add Answer
-                        </button>
+            <div id="app">
+                <div v-for="(question, index) in questions">
+                    <div class="row">
+                        <div class="col-xs-12 col-sm-6">
+                            <div class="form-group">
+                                <label for="question1">Question</label>
+                                <input type="text" placeholder="Question" class="form-control" name="question[]" v-bind:id="question.id" >
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-sm-6">
+                            <div class="form-group">
+                                <label for="question_type">Question Type</label>
+                                <select name="qType[]" id="" class="form-control">
+                                    <option value="">--- question type ---</option>
+                                    <option value="radio">Single choice</option>
+                                    <option value="checkbox">Multiple choices</option>
+                                    <option value="text">Text</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
 
-                    <button v-on:click="addQuestion" type="button" class="btn btn-app">
-                        Add question
+                    <div class="form-group">
+                    <input v-for="(answer, index) in question.answers" type="text" placeholder="Answer" class="form-control" name="answers[]" >
+                    <input v-for="(answer, index) in question.answers" type="hidden" placeholder="Qid" class="form-control" name="qid[]" v-bind:value="question.id">
+                    </div>
+                    <button v-on:click="addAnswer(question)" type="button" class="btn btn-app">
+                        <i class="fa fa-plus"></i>
+                        Add Answer
                     </button>
 
-                </div>
+            </div>
+
+                <button v-on:click="addQuestion" type="button" class="btn btn-app">
+                    Add question
+                </button>
 
             </div>
 

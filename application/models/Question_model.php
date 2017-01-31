@@ -33,20 +33,15 @@ class Question_model extends CI_Model
     /*
      * Get all questions
      */
-    function get_all_questions()
+    function get_all_questions($formId)
     {
-        $questions = $this->db->query("
-            SELECT
-                *
 
-            FROM
-                `questions`
+        $this->db->select('*');
+        $this->db->from('questions');
+        $this->db->where('question_form', $formId);
+        $questions = $this->db->get();
 
-            WHERE
-                1 = 1
-        ")->result_array();
-
-        return $questions;
+        return $questions->result_array();
     }
 
     /*
@@ -61,17 +56,14 @@ class Question_model extends CI_Model
     /*
      * function to update question
      */
-    function update_question($question_id,$params)
+    function update_question($question_id,$params, $newQuestionType)
     {
-        $this->db->where('question_id',$question_id);
-        $response = $this->db->update('questions',$params);
-        if($response)
-        {
-            return "question updated successfully";
-        }
-        else
-        {
-            return "Error occuring while updating question";
+        foreach ($params as $key => $question){
+            $this->db->set('question_label', $question);
+            $this->db->set('question_type', $newQuestionType[$key]);
+            $this->db->query("SET FOREIGN_KEY_CHECKS=0");
+            $this->db->where('question_id',$question_id[$key]);
+            $this->db->update('questions');
         }
     }
 
@@ -89,5 +81,26 @@ class Question_model extends CI_Model
         {
             return "Error occuring while deleting question";
         }
+    }
+
+    function get_answers(){
+        $this->db->select('*');
+        $this->db->from('answers');
+        $answers = $this->db->get();
+
+        return $answers->result_array();
+    }
+
+    function update_answers($answer_id, $question_id,$params){
+
+        foreach ($params as $key => $answer){
+//            var_dump($question_id[$key]);
+            $this->db->set('ans_value', $answer);
+            $this->db->query("SET FOREIGN_KEY_CHECKS=0");
+            $this->db->where('ans_id', $answer_id[$key]);
+            $this->db->where('ans_question',$question_id[$key]);
+            $this->db->update('answers');
+        }
+
     }
 }

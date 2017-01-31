@@ -177,7 +177,6 @@ class Projects extends MY_Controller
 
         if(isset($project['project_id']) && $this->ion_auth->is_admin())
         {
-
             if ( isset($_POST) && count($_POST) >0 )
             {
                 $params = array(
@@ -190,6 +189,16 @@ class Projects extends MY_Controller
             }
             else
             {
+                //Get the form for project
+                $this->load->model('Form_model');
+                $this->data['form'] = $this->Form_model->get_project_form($id);
+
+                //Get all form questions
+                $this->load->model('Question_model');
+                $this->data['all_questions'] = $this->Question_model->get_all_questions($this->data['form']['form_id']);
+
+                $this->data['all_answers'] = $this->Question_model->get_answers();
+
                 $this->data['projects'] = $this->Projects_model->get_project($id);
                 $this->render('auth/projects_edit');
             }
