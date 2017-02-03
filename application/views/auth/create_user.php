@@ -1,9 +1,17 @@
+<?php if($message) : ?>
+      <div class="callout callout-danger">
+            <h4>Please pay attention!</h4>
+
+            <div id="infoMessage"><?php echo $message;?></div>
+      </div>
+<?php endif; ?>
+
 <div class="box box-info">
       <div class="box-header with-border">
-            <h3 class="box-title">Adauga un utilizator nou</h3>
+            <h3 class="box-title">Add new user</h3>
       </div>
-      <div id="infoMessage"><?php echo $message;?></div>
-      <?php echo form_open("dashboard/create_user");?>
+
+      <?php echo form_open("users/create_user");?>
 
       <div class="box-body">
             <div class="form-group">
@@ -70,7 +78,7 @@
             </div>
 
 
-            <?php echo form_submit('submit', 'Trimite', 'class="btn btn-info pull-left"');?></p>
+            <?php echo form_submit('submit', 'Create user', 'class="btn btn-info pull-left"');?></p>
       </div>
 
       <?php echo form_close();?>

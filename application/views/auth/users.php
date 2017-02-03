@@ -10,17 +10,17 @@
 	<div class="col-xs-12">
 		<div class="box">
 			<div class="box-header">
-				<h3 class="box-title">Users</h3>
+				<h3 class="box-title">All users</h3>
 
-				<div class="box-tools">
-					<div class="input-group input-group-sm" style="width: 150px;">
-						<input type="text" name="table_search" class="form-control pull-right" placeholder="Search">
-
-						<div class="input-group-btn">
-							<button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
-						</div>
-					</div>
-				</div>
+<!--				<div class="box-tools">-->
+<!--					<div class="input-group input-group-sm" style="width: 150px;">-->
+<!--						<input type="text" name="table_search" class="form-control pull-right" placeholder="Search">-->
+<!---->
+<!--						<div class="input-group-btn">-->
+<!--							<button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>-->
+<!--						</div>-->
+<!--					</div>-->
+<!--				</div>-->
 			</div>
 			<!-- /.box-header -->
 			<div class="box-body table-responsive no-padding">
@@ -41,7 +41,7 @@
 							<td><?php echo htmlspecialchars($user->email,ENT_QUOTES,'UTF-8');?></td>
 							<td>
 								<?php foreach ($user->groups as $group):?>
-									<?php echo anchor("users/edit_group/".$group->id, htmlspecialchars($group->name,ENT_QUOTES,'UTF-8')) ;?><br />
+									<?php echo htmlspecialchars($group->name,ENT_QUOTES,'UTF-8') ;?><br />
 								<?php endforeach?>
 							</td>
 							<td><?php echo ($user->active) ? anchor("users/deactivate/".$user->id, '<span class="label label-success">'.lang('index_active_link').'</span>') : anchor("users/activate/". $user->id, '<span class="label label-danger">'.lang('index_inactive_link').'</span>');?></td>

@@ -7,6 +7,10 @@ class Dashboard extends MY_Controller {
         $this->data['page_description'] = 'Dashboard';
         $this->load->model('Projects_model');
         $this->data['projectsCount'] = count($this->Projects_model->get_all_projects_nd());
+
+        $group_id = 2; //your group id in database
+        $this->data['clientsNumber'] = count($this->ion_auth->users($group_id)->result_array());
+
     }
 
     public function index()
