@@ -94,7 +94,7 @@ class Feedback extends MY_Controller
 
     public function succes(){
         //redirect to login page
-        header( "refresh:5;url=../../");
+        header( "refresh:5;url=../");
         $this->render('feedback_sent');
     }
 

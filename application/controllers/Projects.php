@@ -26,6 +26,11 @@ class Projects extends MY_Controller
      */
     function index($offset = 0, $order_column = 'project_id', $order_type = 'asc')
     {
+        if (!$this->ion_auth->logged_in())
+        {
+            // redirect them to the login page
+            redirect('user/login', 'refresh');
+        } else{
         if (empty($offset)) $offset = 0;
         if (empty($order_column)) $order_column = 'id';
         if (empty($order_type)) $order_type = 'asc';
@@ -130,6 +135,7 @@ class Projects extends MY_Controller
 
         // load view
         $this->render('auth/projects');
+        }
     }
 
     /*
@@ -137,39 +143,45 @@ class Projects extends MY_Controller
      */
     function add()
     {
-        //Get clients - group with id 2 (account)
-        $this->data['clients'] = $this->ion_auth->users(2)->result();
+        if (!$this->ion_auth->logged_in())
+        {
+            // redirect them to the login page
+            redirect('user/login', 'refresh');
+        } else {
+            //Get clients - group with id 2 (account)
+            $this->data['clients'] = $this->ion_auth->users(2)->result();
 
-        $this->load->library('form_validation');
-        $this->form_validation->set_rules('project_name','Nume','required',
-            array('required' => 'Please type a name for project')
+            $this->load->library('form_validation');
+            $this->form_validation->set_rules('project_name', 'Nume', 'required',
+                array('required' => 'Please type a name for project')
             );
-        $this->form_validation->set_rules('project_client','Client','required|greater_than[0]',
-            array('greater_than' => 'Please select a client')
-        );
+            $this->form_validation->set_rules('project_client', 'Client', 'required|greater_than[0]',
+                array('greater_than' => 'Please select a client')
+            );
 
-        //Verify if we have POST and if the form is validated
-       if ( isset($_POST) && count($_POST) >0 && $this->form_validation->run() ){
-           $params = array(
-               'project_name' => $this->input->post('project_name'),
-               'project_client' => $this->input->post('project_client'),
-               'project_created' => date('Y-m-d'),
-           );
+            //Verify if we have POST and if the form is validated
+            if (isset($_POST) && count($_POST) > 0 && $this->form_validation->run()) {
+                $params = array(
+                    'project_name' => $this->input->post('project_name'),
+                    'project_client' => $this->input->post('project_client'),
+                    'project_created' => date('Y-m-d'),
+                );
 
-           //Get developers assigned to project
-           $developersInput = $this->input->post('developersToProject');
+                //Get developers assigned to project
+                $developersInput = $this->input->post('developersToProject');
 
-           //Put developers to array
-           $developersParam = array();
-           foreach ( $developersInput as $item ){
-               array_push($developersParam, $item);
-           }
+                //Put developers to array
+                $developersParam = array();
+                foreach ($developersInput as $item) {
+                    array_push($developersParam, $item);
+                }
 
-           $this->Projects_model->add_projects($params, $developersParam);
-           redirect('projects/index');
-       }else{
-           $this->render('auth/projects_add');
-       }
+                $this->Projects_model->add_projects($params, $developersParam);
+                redirect('projects/index');
+            } else {
+                $this->render('auth/projects_add');
+            }
+        }
     }
 
     /*
@@ -177,41 +189,42 @@ class Projects extends MY_Controller
      */
     function edit($id)
     {
-        // check if the projects exists before trying to edit it
-        $project = $this->Projects_model->get_project($id);
-
-        $this->data['developersToProject'] = $this->Projects_model->get_developers($id)->result();
-
-        if(isset($project['project_id']) && $this->ion_auth->is_admin())
+        if (!$this->ion_auth->logged_in())
         {
-            if ( isset($_POST) && count($_POST) >0 )
-            {
-                $params = array(
-                    'project_name' => $this->input->post('nume'),
-                    'project_status' => $this->input->post('status'),
-                );
+            // redirect them to the login page
+            redirect('user/login', 'refresh');
+        } else {
+            // check if the projects exists before trying to edit it
+            $project = $this->Projects_model->get_project($id);
 
-                $this->Projects_model->update_projects($id,$params);
-                redirect('projects/index');
-            }
-            else
-            {
-                //Get the form for project
-                $this->load->model('Form_model');
-                $this->data['form'] = $this->Form_model->get_project_form($id);
+            $this->data['developersToProject'] = $this->Projects_model->get_developers($id)->result();
 
-                //Get all form questions
-                $this->load->model('Question_model');
-                $this->data['all_questions'] = $this->Question_model->get_all_questions($this->data['form']['form_id']);
+            if (isset($project['project_id']) && $this->ion_auth->is_admin()) {
+                if (isset($_POST) && count($_POST) > 0) {
+                    $params = array(
+                        'project_name' => $this->input->post('nume'),
+                        'project_status' => $this->input->post('status'),
+                    );
 
-                $this->data['all_answers'] = $this->Question_model->get_answers();
+                    $this->Projects_model->update_projects($id, $params);
+                    redirect('projects/index');
+                } else {
+                    //Get the form for project
+                    $this->load->model('Form_model');
+                    $this->data['form'] = $this->Form_model->get_project_form($id);
 
-                $this->data['projects'] = $this->Projects_model->get_project($id);
-                $this->render('auth/projects_edit');
-            }
+                    //Get all form questions
+                    $this->load->model('Question_model');
+                    $this->data['all_questions'] = $this->Question_model->get_all_questions($this->data['form']['form_id']);
+
+                    $this->data['all_answers'] = $this->Question_model->get_answers();
+
+                    $this->data['projects'] = $this->Projects_model->get_project($id);
+                    $this->render('auth/projects_edit');
+                }
+            } else
+                show_error('The projects you are trying to edit does not exist or you are not administrator.');
         }
-        else
-            show_error('The projects you are trying to edit does not exist or you are not administrator.');
     }
 
     /*
@@ -219,16 +232,20 @@ class Projects extends MY_Controller
      */
     function remove($id)
     {
-        $projects = $this->Projects_model->get_project($id);
-
-        // check if the projects exists before trying to delete it
-        if(isset($projects['project_id']) && $this->ion_auth->is_admin())
+        if (!$this->ion_auth->logged_in())
         {
-            $this->Projects_model->delete_projects($id);
-            redirect('projects/index');
+            // redirect them to the login page
+            redirect('user/login', 'refresh');
+        } else {
+            $projects = $this->Projects_model->get_project($id);
+
+            // check if the projects exists before trying to delete it
+            if (isset($projects['project_id']) && $this->ion_auth->is_admin()) {
+                $this->Projects_model->delete_projects($id);
+                redirect('projects/index');
+            } else
+                show_error('The projects you are trying to delete does not exist or you are not administrator.');
         }
-        else
-            show_error('The projects you are trying to delete does not exist or you are not administrator.');
     }
 
     /*

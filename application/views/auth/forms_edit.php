@@ -35,6 +35,8 @@
                 <input type="text" name="form_created" value="<?php echo ($this->input->post('form_created') ? $this->input->post('form_created') : $form['form_created']); ?>" class="form-control" id="form_created" />
         </div>
 
+        <?php if (!$form['form_status']) : ?>
+
         <?php foreach ($all_questions as $key => $question): ?>
         <div class="row">
             <div class="col-xs-12 col-sm-6">
@@ -78,6 +80,13 @@
             <?php endforeach; ?>
 
         <?php endforeach; ?>
+        <?php else: ?>
+            <div class="alert alert-info alert-dismissible">
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                <h4><i class="icon fa fa-info"></i> Alert!</h4>
+                The form was sent, you cannot edit questions/answers anymore.
+            </div>
+        <?php endif; ?>
 
         <div class="form-group">
                 <button type="submit" class="btn btn-success">Save</button>

@@ -19,11 +19,17 @@ class Form extends MY_Controller
      */
     function index()
     {
-        $this->data['forms'] = $this->Form_model->get_all_forms();
+        if (!$this->ion_auth->logged_in())
+        {
+            // redirect them to the login page
+            redirect('user/login', 'refresh');
+        } else {
+            $this->data['forms'] = $this->Form_model->get_all_forms();
 
-        $this->load->model('Projects_model');
+            $this->load->model('Projects_model');
 
-        $this->render('auth/forms');
+            $this->render('auth/forms');
+        }
     }
 
     /*
@@ -31,77 +37,79 @@ class Form extends MY_Controller
      */
     function add()
     {
-
-        $this->load->library('form_validation');
-
-        $this->form_validation->set_rules('form_project','Form Project','required');
-        $this->form_validation->set_rules('question[]','Questions','required');
-        $this->form_validation->set_rules('qType[]','Question type','required');
-        $this->form_validation->set_rules('answers[]','Answers','required');
-
-        if($this->form_validation->run() && $this->ion_auth->is_admin())
+        if (!$this->ion_auth->logged_in())
         {
-            $this->load->helper('string');
-            $slug = random_string('alnum', 16);
+            // redirect them to the login page
+            redirect('user/login', 'refresh');
+        } else {
+            $this->load->library('form_validation');
+
+            $this->form_validation->set_rules('form_project', 'Form Project', 'required');
+            $this->form_validation->set_rules('question[]', 'Questions', 'required');
+            $this->form_validation->set_rules('qType[]', 'Question type', 'required');
+            $this->form_validation->set_rules('answers[]', 'Answers', 'required');
+
+            if ($this->form_validation->run() && $this->ion_auth->is_admin()) {
+                $this->load->helper('string');
+                $slug = random_string('alnum', 16);
 
 
-            $questionsInput = $this->input->post('question');
-            $answersInput = $this->input->post('answers');
-            $questionType = $this->input->post('qType');
+                $questionsInput = $this->input->post('question');
+                $answersInput = $this->input->post('answers');
+                $questionType = $this->input->post('qType');
 
 
-            //Question id for answer
-            $qId = $this->input->post('qid');
+                //Question id for answer
+                $qId = $this->input->post('qid');
 
-            //Question id for question type
-            $qTypeFor = $this->input->post('qTypeId');
+                //Question id for question type
+                $qTypeFor = $this->input->post('qTypeId');
 
 
-            //Put questions to array
-            $questionsParam = array();
-            foreach ( $questionsInput as $item ){
-                array_push($questionsParam, $item);
+                //Put questions to array
+                $questionsParam = array();
+                foreach ($questionsInput as $item) {
+                    array_push($questionsParam, $item);
+                }
+                //Put answers to array
+                $answersParam = array();
+                foreach ($answersInput as $item) {
+                    array_push($answersParam, $item);
+                }
+                //Put answers numbers to array
+                $qIdParam = array();
+                foreach ($qId as $item) {
+                    array_push($qIdParam, $item);
+                }
+
+                //Put question ids for types to array
+                $qTypeIdParam = array();
+                foreach ($qTypeFor as $item) {
+                    array_push($qTypeIdParam, $item);
+                }
+
+                //Put question types to array
+                $qTypeParam = array();
+                foreach ($questionType as $item) {
+                    array_push($qTypeParam, $item);
+                }
+
+                $params = array(
+                    'form_name' => $this->input->post('form_name'),
+                    'form_project' => $this->input->post('form_project'),
+                    'form_created' => date('Y-m-d'),
+                    'form_slug' => $slug
+                );
+
+                $form_id = $this->Form_model->add_form($params, $questionsParam, $answersParam, $qIdParam, $qTypeParam);
+                redirect('form');
+            } else {
+
+                $this->load->model('Projects_model');
+                $this->data['all_projects'] = $this->Projects_model->get_all_projects_nd();
+
+                $this->render('auth/forms_add');
             }
-            //Put answers to array
-            $answersParam = array();
-            foreach ( $answersInput as $item ){
-                array_push($answersParam, $item);
-            }
-            //Put answers numbers to array
-            $qIdParam = array();
-            foreach ( $qId as $item ){
-                array_push($qIdParam, $item);
-            }
-
-            //Put question ids for types to array
-            $qTypeIdParam = array();
-            foreach ( $qTypeFor as $item ){
-                array_push($qTypeIdParam, $item);
-            }
-
-            //Put question types to array
-            $qTypeParam = array();
-            foreach( $questionType as $item){
-                array_push($qTypeParam, $item);
-            }
-
-            $params = array(
-                'form_name' => $this->input->post('form_name'),
-                'form_project' => $this->input->post('form_project'),
-                'form_created' => date('Y-m-d'),
-                'form_slug' => $slug
-            );
-
-            $form_id = $this->Form_model->add_form($params,$questionsParam, $answersParam, $qIdParam, $qTypeParam);
-            redirect('form');
-        }
-        else
-        {
-
-            $this->load->model('Projects_model');
-            $this->data['all_projects'] = $this->Projects_model->get_all_projects_nd();
-
-            $this->render('auth/forms_add');
         }
     }
 
@@ -110,64 +118,65 @@ class Form extends MY_Controller
      */
     function edit($form_id)
     {
-        // check if the form exists before trying to edit it
-        $form = $this->Form_model->get_form($form_id);
-
-        if(isset($form['form_id']) && $this->ion_auth->is_admin())
+        if (!$this->ion_auth->logged_in())
         {
-            $this->load->library('form_validation');
+            // redirect them to the login page
+            redirect('user/login', 'refresh');
+        } else {
+            // check if the form exists before trying to edit it
+            $form = $this->Form_model->get_form($form_id);
 
-            $this->form_validation->set_rules('form_name','Form Name','required');
+            if (isset($form['form_id']) && $this->ion_auth->is_admin()) {
+                $this->load->library('form_validation');
 
-            if($this->form_validation->run())
-            {
+                $this->form_validation->set_rules('form_name', 'Form Name', 'required');
 
-                //New questions
-                $newQuestions = $this->input->post('question');
-                $newQuestionsId = $this->input->post('qId');
+                if ($this->form_validation->run()) {
 
-                //New answers
-                $newAnswers = $this->input->post('answers');
-                $newAnswersQuestionId = $this->input->post('qIdAns');
-                $newAnswersId = $this->input->post('ansId');
+                    //New questions
+                    $newQuestions = $this->input->post('question');
+                    $newQuestionsId = $this->input->post('qId');
 
-                //New type
-                $newQuestionType = $this->input->post('qType');
-                $newQuestionIdType = $this->input->post('qIdType');
+                    //New answers
+                    $newAnswers = $this->input->post('answers');
+                    $newAnswersQuestionId = $this->input->post('qIdAns');
+                    $newAnswersId = $this->input->post('ansId');
 
-                $this->load->model('Question_model');
-                $this->Question_model->update_question($newQuestionsId ,$newQuestions, $newQuestionType);
-                $this->Question_model->update_answers($newAnswersId, $newAnswersQuestionId, $newAnswers);
+                    //New type
+                    $newQuestionType = $this->input->post('qType');
+                    $newQuestionIdType = $this->input->post('qIdType');
+
+                    $this->load->model('Question_model');
+                    $this->Question_model->update_question($newQuestionsId, $newQuestions, $newQuestionType);
+                    $this->Question_model->update_answers($newAnswersId, $newAnswersQuestionId, $newAnswers);
 
 //                $questionsParam = array();
 
-                $params = array(
-                    'form_name' => $this->input->post('form_name'),
-                );
+                    $params = array(
+                        'form_name' => $this->input->post('form_name'),
+                    );
 
-                $this->Form_model->update_form($form_id,$params);
-                redirect('form/index');
-            }
-            else
-            {
-                $this->data['form'] = $this->Form_model->get_form($form_id);
+                    $this->Form_model->update_form($form_id, $params);
+                    redirect('form/index');
+                } else {
+                    $this->data['form'] = $this->Form_model->get_form($form_id);
 
-                //Get all projects for select option
-                $this->load->model('Projects_model');
-                $this->data['all_projects'] = $this->Projects_model->get_all_projects_nd();
+                    //Get all projects for select option
+                    $this->load->model('Projects_model');
+                    $this->data['all_projects'] = $this->Projects_model->get_all_projects_nd();
 
-                //Get all form questions
-                $this->load->model('Question_model');
-                $this->data['all_questions'] = $this->Question_model->get_all_questions($form_id);
+                    //Get all form questions
+                    $this->load->model('Question_model');
+                    $this->data['all_questions'] = $this->Question_model->get_all_questions($form_id);
 
-                $this->data['all_answers'] = $this->Question_model->get_answers();
+                    $this->data['all_answers'] = $this->Question_model->get_answers();
 
 
-                $this->render('auth/forms_edit');
-            }
+                    $this->render('auth/forms_edit');
+                }
+            } else
+                show_error('The form you are trying to edit does not exist.');
         }
-        else
-            show_error('The form you are trying to edit does not exist.');
     }
 
     /*
@@ -175,16 +184,20 @@ class Form extends MY_Controller
      */
     function remove($form_id)
     {
-        $form = $this->Form_model->get_form($form_id);
-
-        // check if the form exists before trying to delete it
-        if(isset($form['form_id']))
+        if (!$this->ion_auth->logged_in())
         {
-            $this->Form_model->delete_form($form_id);
-            redirect('form/index');
+            // redirect them to the login page
+            redirect('user/login', 'refresh');
+        } else {
+            $form = $this->Form_model->get_form($form_id);
+
+            // check if the form exists before trying to delete it
+            if (isset($form['form_id'])) {
+                $this->Form_model->delete_form($form_id);
+                redirect('form/index');
+            } else
+                show_error('The form you are trying to delete does not exist.');
         }
-        else
-            show_error('The form you are trying to delete does not exist.');
     }
 
     /*

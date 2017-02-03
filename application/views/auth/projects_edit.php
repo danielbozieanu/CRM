@@ -69,46 +69,57 @@
 
                 </div>
                 <?php foreach ($all_questions as $key => $question): ?>
-                    <div class="row">
-                        <div class="col-xs-12 col-sm-6">
-                            <div class="form-group">
-                                <label for="question">Question <?php echo $key+1; ?></label>
-                                <input disabled type="text" class="form-control" value="<?php echo $question['question_label']; ?>">
+                    <div class="box-group" id="accordion">
+                        <div class="panel box box-primary">
+                            <div class="box-header with-border">
+                                <div class="col-xs-12 col-sm-6">
+                                    <div class="form-group">
+                                        <label for="question">
+                                            <h4 class="box-title">
+                                                <a href="#collapse<?php echo $key ?>" data-toggle="collapse" data-parent="#accordion">
+                                                    <?php echo ($key+1).'.'.$question['question_label']; ?>
+                                                </a>
+                                            </h4>
+                                        </label>
+                                        <input disabled type="hidden" class="form-control" value="<?php echo $question['question_label']; ?>">
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-sm-6">
+                                    <div class="form-group">
+                                        <label for="question">Question <?php echo $key+1; ?> type</label>
+
+                                            <?php if( $question['question_type'] == 'radio' ) : ?>
+                                                <span>Single choice</span>
+                                            <?php elseif ( $question['question_type'] == 'checkbox' ) : ?>
+                                                <span>Multiple choices</span>
+                                            <?php else: ?>
+                                                <option value="text">Text</option>
+                                                <option value="checkbox">Multiple choices</option>
+                                                <option value="radio">Single choice</option>
+                                            <?php endif; ?>
+
+                                    </div>
+                                </div>
                             </div>
                         </div>
-                        <div class="col-xs-12 col-sm-6">
+
+                    <div id="collapse<?php echo $key; ?>" class="panel-collapse collapse" aria-expanded="true">
+                        <div class="box-body">
                             <div class="form-group">
-                                <label for="question">Question <?php echo $key+1; ?> type</label>
-                                <select disabled name="qType[]" id="" class="form-control">
-                                    <?php if( $question['question_type'] == 'radio' ) : ?>
-                                        <option value="radio">Single choice</option>
-                                        <option value="checkbox">Multiple choices</option>
-                                        <option value="text">Text</option>
-                                    <?php elseif ( $question['question_type'] == 'checkbox' ) : ?>
-                                        <option value="checkbox">Multiple choices</option>
-                                        <option value="radio">Single choice</option>
-                                        <option value="text">Text</option>
-                                    <?php else: ?>
-                                        <option value="text">Text</option>
-                                        <option value="checkbox">Multiple choices</option>
-                                        <option value="radio">Single choice</option>
+                                <p>Answers</p>
+                                <?php foreach($all_answers as $answer) : ?>
+                                    <?php if ($question['question_id'] == $answer['ans_question']) : ?>
+                                        <label>
+                                            <input disabled type="<?php echo $question['question_type']; ?>" <?php echo ($answer['ans_selected'] ? 'checked' :  ''); ?> >
+                                            <?php echo $answer['ans_value']; ?>
+                                        </label>
+                                        <br>
                                     <?php endif; ?>
-                                </select>
+                                <?php endforeach; ?>
                             </div>
                         </div>
                     </div>
-                    <div class="form-group">
-                    <p>Answers</p>
-                    <?php foreach($all_answers as $answer) : ?>
-                        <?php if ($question['question_id'] == $answer['ans_question']) : ?>
-                            <label>
-                                <input disabled type="<?php echo $question['question_type']; ?>" <?php echo ($answer['ans_selected'] ? 'checked' :  ''); ?> >
-                                <?php echo $answer['ans_value']; ?>
-                            </label>
-                            <br>
-                        <?php endif; ?>
-                    <?php endforeach; ?>
-                    </div>
+                </div>
                 <?php endforeach; ?>
             <?php elseif ($projects['project_status'] == 1):?>
                 <div class="alert alert-warning alert-dismissible" style="margin-top:20px;">
@@ -122,3 +133,5 @@
 
     </div>
 </div>
+
+

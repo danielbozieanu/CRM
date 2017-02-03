@@ -15,7 +15,13 @@ class Dashboard extends MY_Controller {
 
     public function index()
     {
-        $this->render('auth/dashboard');
+        if (!$this->ion_auth->logged_in())
+        {
+            // redirect them to the login page
+            redirect('user/login', 'refresh');
+        }else {
+            $this->render('auth/dashboard');
+        }
     }
 
     /*

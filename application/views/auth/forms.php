@@ -13,7 +13,7 @@
     </div>
 
     <div class="box-body">
-        <table class="table table-bordered">
+        <table class="table table-bordered table-hover">
             <tr>
                 <th>#</th>
                 <th>Form Name</th>
