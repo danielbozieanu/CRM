@@ -9,7 +9,7 @@
             <?php echo form_open('projects/add'); ?>
                 <div class="box-body">
                     <div class="form-group">
-                        <label for="nume">Nume proiect</label>
+                        <label for="nume">Project name</label>
                         <input class="form-control" name="project_name" value="<?php echo $this->input->post('project_name'); ?>"/>
                     </div>
 
@@ -19,17 +19,16 @@
                             <option value="0">---SELECT CLIENT---</option>
                             <?php foreach ( $clients as $client): ?>
                                 <option value="<?php echo $client->id; ?>">
-                                <?php echo $client->first_name; ?>
+                                <?php echo $client->company; ?>
                                 </option>
                             <?php endforeach; ?>
                         </select>
                     </div>
 
                     <div class="row">
-                        <label class="col-xs-12"><h4>Echipa:</h4></label>
+                        <label class="col-xs-12"><h4>Select developers:</h4></label>
                         <div class="col-xs-6">
                             <div class="form-group">
-                                <label>Frontend</label>
                                 <?php foreach ($users as $user):?>
                                     <?php if ( $user->active == 1) :?>
                                         <?php foreach ($user->groups as $group):?>
@@ -49,7 +48,9 @@
                     </div>
 
                 </div>
-            <button type="submit">Save</button>
+            <div class="box-footer">
+                <button type="submit" class="btn btn-success">Save</button>
+            </div>
             <?php echo form_close(); ?>
 
         </div>

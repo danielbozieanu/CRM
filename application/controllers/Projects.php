@@ -8,6 +8,8 @@ class Projects extends MY_Controller
     function __construct()
     {
         parent::__construct();
+        $this->data['page_title'] = 'CRM LOW - Projects';
+        $this->data['page_description'] = 'Projects administration';
         $this->load->model('Projects_model');
         $this->load->helper(array('url','language'));
         $this->load->library('ion_auth');
@@ -27,6 +29,7 @@ class Projects extends MY_Controller
         if (empty($offset)) $offset = 0;
         if (empty($order_column)) $order_column = 'id';
         if (empty($order_type)) $order_type = 'asc';
+        $this->data['noProjects'] = '';
 
 
         //load data
@@ -77,6 +80,8 @@ class Projects extends MY_Controller
 
         $i = 0 + $offset;
 
+        if ( $projects ){
+
         foreach ($projects as $project){
 
             if ( $project->project_status == 1 ){
@@ -99,12 +104,14 @@ class Projects extends MY_Controller
 
                 $this->status,
 
-                anchor('projects/edit/'.$project->project_id,'<i class="fa fa-eye"></i>','class="btn btn-warning btn-xs" data-skin="skin-yellow"'),
+                anchor('projects/edit/'.$project->project_id,'<i class="fa fa-eye"></i>','class="btn btn-primary btn-xs" data-skin="skin-yellow"'),
 
-                anchor('projects/remove/'.$project->project_id,'<i class="fa fa-trash-o"></i>','class="btn btn-danger btn-xs" data-skin="skin-yellow"')
-
+               '<a href=""  class="btn btn-danger btn-xs" data-toggle="modal" onclick="confirm_modal(\''.site_url('projects/remove/'.$project->project_id).'\',\'Title\')" > <i class="fa fa-trash-o"></i>  </a>'
             );
 
+        }
+        } else {
+            $this->data['noProjects'] = 'There are no projects yet!';
         }
 
         $this->data['table'] = $this->table->generate();

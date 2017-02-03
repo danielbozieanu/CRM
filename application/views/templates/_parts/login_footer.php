@@ -4,5 +4,8 @@
 <script src="<?php echo base_url(); ?>assets/js/bootstrap.min.js"></script>
 <!-- AdminLTE App -->
 <script src="<?php echo base_url(); ?>assets/js/app.min.js"></script>
+
+<!-- Jquery Validation -->
+<script src="<?php echo base_url(); ?>assets/js/jqueryvalidation/jquery.validate.min.js"></script>
 </body>
 </html>

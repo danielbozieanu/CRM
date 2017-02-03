@@ -8,7 +8,8 @@ class Users extends Auth_Controller {
         parent::__construct();
         $this->data['page_title'] = 'CRM LOW - Users';
         $this->data['page_description'] = 'Users';
-        $this->data['current'] = $this->ion_auth->user()->row();
+        $this->data['current_user'] = $this->ion_auth->user()->row();
+        $this->data['current_user_group'] = $this->ion_auth->get_users_groups($this->data['current_user']->id)->result();
         $this->load->database();
         $this->load->library(array('ion_auth','form_validation'));
         $this->load->helper(array('url','language'));
@@ -45,7 +46,7 @@ class Users extends Auth_Controller {
                 $this->data['users'][$k]->groups = $this->ion_auth->get_users_groups($user->id)->result();
             }
 
-            $this->render('auth/index');
+            $this->render('auth/users');
         }
     }
 

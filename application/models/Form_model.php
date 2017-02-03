@@ -20,6 +20,14 @@ class Form_model extends CI_Model
     }
 
     /*
+     * Get form by slug
+     */
+    function get_form_slug($form_slug)
+    {
+        return $this->db->get_where('forms',array('form_slug'=>$form_slug))->row_array();
+    }
+
+    /*
      * Get form by project id
      */
     function get_project_form($project_id)

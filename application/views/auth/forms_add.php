@@ -1,5 +1,12 @@
-<?php echo validation_errors(); ?>
+<?php if (validation_errors()): ?>
+<div class="callout callout-danger">
+    <h3 style="margin-top: 0;">Pay attention!</h3>
 
+    <h4>There are some errors:</h4>
+    <p><?php echo validation_errors(); ?></p>
+
+</div>
+<?php endif; ?>
 
     <div class="box box-primary">
         <div class="box-header with-border">
@@ -13,7 +20,7 @@
 
             <div class="form-group">
                 <label for="form_name" class="control-label">Form Name</label>
-                <input type="text" name="form_name" class="form-control" id="form_name"><?php echo $this->input->post('form_name'); ?>
+                <input type="text" name="form_name" class="form-control" id="form_name" value="<?php echo $this->input->post('form_name'); ?>">
             </div>
 
             <div class="form-group">

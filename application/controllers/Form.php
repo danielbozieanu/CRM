@@ -9,6 +9,8 @@ class Form extends MY_Controller
     function __construct()
     {
         parent::__construct();
+        $this->data['page_title'] = 'CRM LOW - Forms';
+        $this->data['page_description'] = 'Forms administration';
         $this->load->model('Form_model');
     }
 
@@ -18,6 +20,8 @@ class Form extends MY_Controller
     function index()
     {
         $this->data['forms'] = $this->Form_model->get_all_forms();
+
+        $this->load->model('Projects_model');
 
         $this->render('auth/forms');
     }
@@ -31,9 +35,15 @@ class Form extends MY_Controller
         $this->load->library('form_validation');
 
         $this->form_validation->set_rules('form_project','Form Project','required');
+        $this->form_validation->set_rules('question[]','Questions','required');
+        $this->form_validation->set_rules('qType[]','Question type','required');
+        $this->form_validation->set_rules('answers[]','Answers','required');
 
         if($this->form_validation->run() && $this->ion_auth->is_admin())
         {
+            $this->load->helper('string');
+            $slug = random_string('alnum', 16);
+
 
             $questionsInput = $this->input->post('question');
             $answersInput = $this->input->post('answers');
@@ -75,11 +85,11 @@ class Form extends MY_Controller
                 array_push($qTypeParam, $item);
             }
 
-
             $params = array(
                 'form_name' => $this->input->post('form_name'),
                 'form_project' => $this->input->post('form_project'),
                 'form_created' => date('Y-m-d'),
+                'form_slug' => $slug
             );
 
             $form_id = $this->Form_model->add_form($params,$questionsParam, $answersParam, $qIdParam, $qTypeParam);

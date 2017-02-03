@@ -11,7 +11,12 @@ class MY_Controller extends CI_Controller {
         $this->data['page_description'] = 'CI_App';
         $this->data['before_closing_head'] = '';
         $this->data['before_closing_body'] = '';
-        $this->data['current'] = $this->ion_auth->user()->row();
+        $this->data['current_user'] = $this->ion_auth->user()->row();
+
+        //Check if logged in
+        if ( $this->data['current_user']){
+            $this->data['current_user_group'] = $this->ion_auth->get_users_groups($this->data['current_user']->id)->result();
+        }
     }
 
     protected function render($the_view = NULL, $template = 'login_master')

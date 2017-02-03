@@ -59,7 +59,14 @@
 
             <?php if ( $form && $projects['project_status'] == 1) : ?>
                 <div class="box-header with-border">
-                    <h1 class="box-title">Form assigned to this project</h1>
+                   <h1 class="box-title">Form assigned to this project</h1>
+                </div>
+
+                <div class="form-group">
+                    <label for="">Form url:</label>
+                    <input class="form-control" type="text" value="<?php echo base_url().$form['form_slug']; ?>" disabled>
+                </div>
+
                 </div>
                 <?php foreach ($all_questions as $key => $question): ?>
                     <div class="row">
@@ -108,7 +115,7 @@
                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
                     <h4><i class="icon fa fa-warning"></i> Alert!</h4>
                     Project done, but no form was generated.
-                    <a href="">Do it now!</a>
+                    <a href="<?php echo base_url().'form/add'; ?>">Do it now!</a>
                 </div>
             <?php endif; ?>
         </div>

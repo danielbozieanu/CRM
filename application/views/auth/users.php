@@ -10,7 +10,7 @@
 	<div class="col-xs-12">
 		<div class="box">
 			<div class="box-header">
-				<h3 class="box-title">Utilizatori</h3>
+				<h3 class="box-title">Users</h3>
 
 				<div class="box-tools">
 					<div class="input-group input-group-sm" style="width: 150px;">
@@ -45,7 +45,7 @@
 								<?php endforeach?>
 							</td>
 							<td><?php echo ($user->active) ? anchor("users/deactivate/".$user->id, '<span class="label label-success">'.lang('index_active_link').'</span>') : anchor("users/activate/". $user->id, '<span class="label label-danger">'.lang('index_inactive_link').'</span>');?></td>
-							<td><?php echo anchor("users/edit_user/".$user->id, 'Edit') ;?></td>
+							<td><?php echo anchor("users/edit_user/".$user->id, '<i class="fa fa-pencil" aria-hidden="true"></i>', array('class'=>'btn btn-xs btn-primary')) ;?></td>
 						</tr>
 					<?php endforeach;?>
 					</tbody></table>
@@ -56,4 +56,5 @@
 	</div>
 </div>
 
-<p><?php echo anchor('users/create_user', lang('index_create_user_link'))?> | <?php echo anchor('users/create_group', lang('index_create_group_link'))?></p>
+<p><?php echo anchor('users/create_user', lang('index_create_user_link'), array('class'=>'btn btn-success'))?></p>
+<?php //echo anchor('users/create_group', lang('index_create_group_link'), array('class'=>'btn btn-primary'))?>
