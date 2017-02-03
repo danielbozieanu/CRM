@@ -64,7 +64,7 @@
 
                 <div class="form-group">
                     <label for="">Form url:</label>
-                    <input class="form-control" type="text" value="<?php echo base_url().$form['form_slug']; ?>" disabled>
+                    <input class="form-control" type="text" value="<?php echo base_url().'feedback/'.$form['form_slug']; ?>" disabled>
                 </div>
 
                 </div>

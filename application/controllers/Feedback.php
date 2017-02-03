@@ -7,10 +7,12 @@ class Feedback extends MY_Controller
     {
         parent::__construct();
         $this->load->model('Form_model');
+
     }
 
     public function index($form_slug)
     {
+        $this->data['radioAns'] = 0;
         // check if the form exists before trying to edit it
         $form = $this->Form_model->get_form_slug($form_slug);
 
@@ -41,6 +43,18 @@ class Feedback extends MY_Controller
     }
 
     public function send(){
+
+        $radiosCount = $this->input->post('radiosCount');
+
+        $radioAnswers = array();
+
+        for( $i=1; $i<=$radiosCount; $i++){
+            $number = 'radios'.$i;
+            if ($this->input->post($number)!= NULL) {
+            $radioAnswers = array_merge($radioAnswers, $this->input->post($number));
+            }
+        }
+
         $this->load->library('form_validation');
 
         $this->form_validation->set_rules('checked[]', 'answer', 'required');
@@ -51,12 +65,12 @@ class Feedback extends MY_Controller
         $answersCount = count($this->input->post('checked'));
         $minAnswers = $this->input->post('minAnswers');
 
-        if (isset($_POST) && count($_POST) >0 && ($answersCount >= $minAnswers+1) && $this->form_validation->run()){
+        if (isset($_POST) && count($_POST) >0 && ($answersCount >= $minAnswers) && ( count($radioAnswers) == $radiosCount ) && $this->form_validation->run()){
         //Form Id for updating status
         $form_id = $this->input->post('form_id');
 
         //Checked answers
-        $checked = $this->input->post('checked');
+        $checked = array_merge($this->input->post('checked'),$radioAnswers);
 
         $this->load->model('Feedback_model');
 
