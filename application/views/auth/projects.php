@@ -1,14 +1,18 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');?>
-<?php if ($noProjects !='') : ?>
-<div class="alert alert-warning alert-dismissible">
-    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-    <h4><i class="icon fa fa-check"></i>Alert!</h4>
-    <?php echo $noProjects; ?>
-</div>
-<div class="pull-left">
-    <a href="<?php echo site_url('projects/add'); ?>" class="btn btn-success">Add new project</a>
-</div>
+<?php if ($noProjects) : ?>
+    <div class="alert alert-warning alert-dismissible">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+        <h4><i class="icon fa fa-check"></i>Alert!</h4>
+        <?php echo $noProjects; ?>
+    </div>
+    <p>
+        <a href="<?php echo site_url('projects/add'); ?>" class="btn btn-success">Add new project</a>
+    </p>
 <?php else: ?>
+<p>
+    <a href="<?php echo site_url('projects/add'); ?>" class="btn btn-success">Add new project</a>
+</p>
+
 <div class="row">
     <div class="col-md-12">
         <div class="box">

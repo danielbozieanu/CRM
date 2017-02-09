@@ -14,7 +14,7 @@
         <div class="form-group">
             <label for="nume">Client:</label>
             <select disabled name="client" class="form-control">
-                <option><?php echo ($this->input->post('project_client') ? $this->input->post('project_client') : $this->ion_auth->user($projects['project_client']))->row()->first_name;  ?></option>
+                <option><?php echo ($this->input->post('project_client') ? $this->input->post('project_client') : $this->ion_auth->user($projects['project_client']))->row()->first_name; ?></option>
             </select>
         </div>
 

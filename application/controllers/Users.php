@@ -77,8 +77,9 @@ class Users extends Auth_Controller {
         {
             $this->form_validation->set_rules('email', $this->lang->line('create_user_validation_email_label'), 'required|valid_email|is_unique[' . $tables['users'] . '.email]');
         }
-        $this->form_validation->set_rules('phone', $this->lang->line('create_user_validation_phone_label'), 'trim');
-        $this->form_validation->set_rules('company', $this->lang->line('create_user_validation_company_label'), 'trim');
+        $this->form_validation->set_rules('phone', $this->lang->line('create_user_validation_phone_label'), 'required|trim');
+        $this->form_validation->set_rules('role', $this->lang->line('create_user_validation_role_label'), 'required|trim');
+        $this->form_validation->set_rules('company', $this->lang->line('create_user_validation_company_label'), 'required|trim');
         $this->form_validation->set_rules('password', $this->lang->line('create_user_validation_password_label'), 'required|min_length[' . $this->config->item('min_password_length', 'ion_auth') . ']|max_length[' . $this->config->item('max_password_length', 'ion_auth') . ']|matches[password_confirm]');
         $this->form_validation->set_rules('password_confirm', $this->lang->line('create_user_validation_password_confirm_label'), 'required');
 
@@ -87,6 +88,7 @@ class Users extends Auth_Controller {
             $email    = strtolower($this->input->post('email'));
             $identity = ($identity_column==='email') ? $email : $this->input->post('identity');
             $password = $this->input->post('password');
+            $role     = $this->input->post('role');
 
             $additional_data = array(
                 'first_name' => $this->input->post('first_name'),
@@ -95,7 +97,7 @@ class Users extends Auth_Controller {
                 'phone'      => $this->input->post('phone'),
             );
         }
-        if ($this->form_validation->run() == true && $this->ion_auth->register($identity, $password, $email, $additional_data))
+        if ($this->form_validation->run() == true && $this->ion_auth->register($identity, $password, $email, $additional_data, $role))
         {
             // check to see if we are creating the user
             // redirect them back to the admin page
@@ -150,6 +152,17 @@ class Users extends Auth_Controller {
                 'value' => $this->form_validation->set_value('phone'),
                 'class' => 'form-control'
             );
+            $this->data['role'] = array(
+                'name'  => 'role',
+                'id'    => 'role',
+                'type'  => 'text',
+                'class' => 'form-control',
+                'options' => array(
+                    '2' => 'Account',
+                    '5' => 'Developer',
+                    '1' => 'Administrator'
+                )
+            );
             $this->data['password'] = array(
                 'name'  => 'password',
                 'id'    => 'password',
@@ -181,7 +194,8 @@ class Users extends Auth_Controller {
 
         $user = $this->ion_auth->user($id)->row();
         $groups=$this->ion_auth->groups()->result_array();
-        $currentGroups = $this->ion_auth->get_users_groups($id)->result();
+        $currentGroups = $this->ion_auth->get_users_groups($id)->result_array();
+
 
         // validate form input
         $this->form_validation->set_rules('first_name', $this->lang->line('edit_user_validation_fname_label'), 'required');
@@ -227,13 +241,15 @@ class Users extends Auth_Controller {
                     //Update the groups user belongs to
                     $groupData = $this->input->post('groups');
 
+//                    var_dump($groupData);
+//                    die();
+
                     if (isset($groupData) && !empty($groupData)) {
 
                         $this->ion_auth->remove_from_group('', $id);
 
-                        foreach ($groupData as $grp) {
-                            $this->ion_auth->add_to_group($grp, $id);
-                        }
+                            $this->ion_auth->add_to_group($groupData, $id);
+
 
                     }
                 }
@@ -507,6 +523,28 @@ class Users extends Auth_Controller {
             $this->session->set_flashdata('message', $this->ion_auth->errors());
             redirect("users/forgot_password", 'refresh');
         }
+    }
+
+    // activate the user
+    public function delete_user($id)
+    {
+        if ($this->ion_auth->is_admin())
+        {
+            $deleted = $this->ion_auth->delete_user($id);
+        }
+
+        if ($deleted)
+        {
+            // redirect them to the auth page
+            $this->session->set_flashdata('message', $this->ion_auth->messages());
+            redirect("users", 'refresh');
+        }
+//        else
+//        {
+//            // redirect them to the forgot password page
+//            $this->session->set_flashdata('message', $this->ion_auth->errors());
+//            redirect("users/forgot_password", 'refresh');
+//        }
     }
 
 

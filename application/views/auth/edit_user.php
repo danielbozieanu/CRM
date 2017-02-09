@@ -46,28 +46,26 @@
 
                   <h3><?php echo lang('edit_user_groups_heading');?></h3>
                   <div class="form-group">
-                        <?php foreach ($groups as $group):?>
-                              <div class="checkbox">
-                                    <label>
-                                          <?php
-                                          $gID=$group['id'];
-                                          $checked = null;
-                                          $item = null;
-                                          foreach($currentGroups as $grp) {
-                                                if ($gID == $grp->id) {
-                                                      $checked= ' checked="checked"';
-                                                      break;
-                                                }
-                                          }
-                                          ?>
-                                          <input type="checkbox" name="groups[]" value="<?php echo $group['id'];?>"<?php echo $checked;?>>
-                                          <?php echo htmlspecialchars($group['name'],ENT_QUOTES,'UTF-8');?>
-                                    </label>
-                              </div>
-                        <?php endforeach?>
+                      <select class="form-control" name="groups">
+                        <?php if ($currentGroups[0]['id'] == 2): ?>
+                            <option value="<?php echo $currentGroups[0]['id']; ?>"><?php echo $currentGroups[0]['description']; ?></option>
+                            <option value="5">Developer</option>
+                            <option value="1">Administrator</option>
+                        <?php elseif ($currentGroups[0]['id'] == 5): ?>
+                          <option value="<?php echo $currentGroups[0]['id']; ?>"><?php echo $currentGroups[0]['description']; ?></option>
+                          <option value="2">Account</option>
+                          <option value="1">Administrator</option>
+
+                        <?php else: ?>
+                        <option value="<?php echo $currentGroups[0]['id']; ?>"><?php echo $currentGroups[0]['description']; ?></option>
+                        <option value="2">Account</option>
+                        <option value="5">Developer</option>
+                      </select>
                   </div>
 
-            <?php endif ?>
+                        <?php endif; ?>
+
+            <?php endif; ?>
 
             <?php echo form_hidden('id', $user->id);?>
             <?php echo form_hidden($csrf); ?>

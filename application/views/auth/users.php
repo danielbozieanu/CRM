@@ -6,6 +6,8 @@
 </div>
 <?php } ?>
 
+    <p><?php echo anchor('users/create_user', lang('index_create_user_link'), array('class'=>'btn btn-success'))?></p>
+
 <div class="row">
 	<div class="col-xs-12">
 		<div class="box">
@@ -45,7 +47,8 @@
 								<?php endforeach?>
 							</td>
 							<td><?php echo ($user->active) ? anchor("users/deactivate/".$user->id, '<span class="label label-success">'.lang('index_active_link').'</span>') : anchor("users/activate/". $user->id, '<span class="label label-danger">'.lang('index_inactive_link').'</span>');?></td>
-							<td><?php echo anchor("users/edit_user/".$user->id, '<i class="fa fa-pencil" aria-hidden="true"></i>', array('class'=>'btn btn-xs btn-primary')) ;?></td>
+							<td><?php echo anchor("users/edit_user/".$user->id, '<i class="fa fa-pencil" aria-hidden="true"></i>', array('class'=>'btn btn-xs btn-primary')) ;?>
+                                <?php echo anchor("users/delete_user/".$user->id, '<i class="fa fa-trash-o" aria-hidden="true"></i>', array('class'=>'btn btn-xs btn-danger', 'onclick'=>'confirm(\'Delete?\')')) ;?></td>
 						</tr>
 					<?php endforeach;?>
 					</tbody></table>
@@ -56,5 +59,4 @@
 	</div>
 </div>
 
-<p><?php echo anchor('users/create_user', lang('index_create_user_link'), array('class'=>'btn btn-success'))?></p>
 <?php //echo anchor('users/create_group', lang('index_create_group_link'), array('class'=>'btn btn-primary'))?>

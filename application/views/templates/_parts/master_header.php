@@ -5,6 +5,8 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <link rel="icon" href="<?=base_url()?>favicon.ico">
+
     <title><?php echo $page_title; ?></title>
     <meta name="description" value="<?php echo $page_description;?>" />
     <!-- Tell the browser to be responsive to screen width -->

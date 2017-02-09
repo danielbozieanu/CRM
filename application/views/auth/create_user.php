@@ -63,6 +63,13 @@
                   <?php echo form_input($phone);?>
             </div>
 
+          <div class="form-group">
+              <label for="group">
+                  <?php echo lang('create_user_role_label', 'role');?>
+              </label>
+              <?php echo form_dropdown($role);?>
+          </div>
+
             <div class="form-group">
                   <label for="password">
                         <?php echo lang('create_user_password_label', 'password');?>

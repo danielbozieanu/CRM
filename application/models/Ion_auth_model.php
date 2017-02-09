@@ -863,7 +863,7 @@ class Ion_auth_model extends CI_Model
 	 * @return bool
 	 * @author Mathew
 	 **/
-	public function register($identity, $password, $email, $additional_data = array(), $groups = array())
+	public function register($identity, $password, $email, $additional_data = array(), $groups)
 	{
 		$this->trigger_events('pre_register');
 
@@ -930,11 +930,7 @@ class Ion_auth_model extends CI_Model
 
 		if (!empty($groups))
 		{
-			// add to groups
-			foreach ($groups as $group)
-			{
-				$this->add_to_group($group, $id);
-			}
+				$this->add_to_group($groups, $id);
 		}
 
 		$this->trigger_events('post_register');

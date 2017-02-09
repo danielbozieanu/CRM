@@ -32,24 +32,13 @@
         <ul class="sidebar-menu">
             <li class="header">MAIN MENU</li>
             <!-- Optionally, you can add icons to the links -->
-            <li class="<?php if($this->uri->segment(1)== NULL ){echo "active";}?>"><?php echo anchor("/", ' <i class="fa fa-tachometer"></i> <span>Dashboard</span>'); ?></li>
+            <li class="<?php if($this->uri->segment(1)== NULL ){echo "active";}?>"><?php echo anchor("/", ' <i class="fa fa-tachometer"></i> <span>Dashboard</span>'); ?>
+            </li>
 
-            <li class="<?php if($this->uri->segment(1)=="users"){echo "active";}?>"><?php echo anchor("users/", ' <i class="fa fa-users"></i> <span>Users</span>'); ?></li>
+            <li class="<?php if($this->uri->segment(1)=="users"){echo "active";}?>"><?php echo anchor("users/", ' <i class="fa fa-users"></i> <span>Users</span>'); ?>
+            </li>
 
-            <li class="treeview <?php if($this->uri->segment(1)=="projects"){echo "active";}?>">
-                <a href="#"><i class="fa fa-suitcase"></i><span>Projects</span> <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span></a>
-
-                <ul class="treeview-menu">
-                    <li class="<?php if($this->uri->segment(1)=="projects" && $this->uri->segment(2)== NULL){echo "active";}?>">
-                        <?php echo anchor("projects/", ' <i class="fa fa-list-alt"></i><span>View</span> <span class="pull-right-container"></span>'); ?>
-                    </li>
-
-                    <?php if ($this->ion_auth->is_admin()): ?>
-                    <li class="<?php if($this->uri->segment(2)=="add"){echo "active";}?>">
-                        <?php echo anchor("projects/add", ' <i class="fa fa-plus-circle"></i> Add new'); ?>
-                    </li>
-                    <?php endif; ?>
-                </ul>
+            <li class="<?php if($this->uri->segment(1)=="projects"){echo "active";}?>"><?php echo anchor("projects/", ' <i class="fa fa-suitcase"></i> <span>Projects</span>'); ?>
             </li>
 
             <li class="treeview <?php if($this->uri->segment(1)=="form"){echo "active";}?>">
