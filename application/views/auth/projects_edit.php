@@ -11,11 +11,81 @@
             <input name="nume" class="form-control" value="<?php echo ($this->input->post('nume') ? $this->input->post('nume') : $projects['project_name']); ?>">
         </div>
 
+        <div class="row">
+            <div class="col-xs-12 col-sm-6">
+                <div class="form-group">
+                    <label for="nume">Agency:</label>
+                    <select disabled name="client" class="form-control">
+                        <option><?php echo $this->ion_auth->user($projects['project_client'])->row()->company; ?></option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-xs-12 col-sm-6">
+                <div class="form-group">
+                    <label for="project_final_client">Final client:</label>
+                    <input id="project_final_client" name="project_final_client" class="form-control" value="<?php echo ($this->input->post('project_final_client') ? $this->input->post('project_final_client') : $projects['project_final_client']); ?>">
+                </div>
+            </div>
+        </div>
+
         <div class="form-group">
-            <label for="nume">Client:</label>
-            <select disabled name="client" class="form-control">
-                <option><?php echo ($this->input->post('project_client') ? $this->input->post('project_client') : $this->ion_auth->user($projects['project_client']))->row()->first_name; ?></option>
-            </select>
+            <label for="status">Developer:</label>
+            <?php var_dump($developersToProject);
+            die();?>
+
+            <?php foreach($developersToProject as $developer): ?>
+                <?php $userAsDeveloper = $this->ion_auth->user($developer->id_user)->row(); ?>
+                <input disabled class="form-control" type="text" value="<?php echo $userAsDeveloper->first_name; ?>">
+            <?php endforeach; ?>
+        </div>
+
+        <div class="row">
+            <div class="col-xs-12 col-sm-6">
+                <div class="form-group">
+                    <label for="datepicker">Start project date:</label>
+                    <div class="input-group date">
+                        <div class="input-group-addon">
+                            <i class="fa fa-calendar"></i>
+                        </div>
+                        <input id="datepicker" name="project_start_date" type="text" class="form-control pull-right" name="project_start_date" value="<?php echo ($this->input->post('project_start_date') ? $this->input->post('project_start_date') : $projects['project_created']); ?>"/>
+
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xs-12 col-sm-6">
+                <div class="form-group">
+                    <label for="project_estimation">Working days estimation:</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="project_estimation" id="project_estimation" value="<?php echo ($this->input->post('project_estimation') ? $this->input->post('project_estimation') : $projects['project_estimate']); ?>">
+                        <span class="input-group-addon">days</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-xs-12 col-sm-6">
+                <div class="form-group">
+                    <label for="project_value">Project Value</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="project_value" id="project_value" value="<?php echo $this->input->post('project_value'); ?>">
+                        <span class="input-group-addon"><i class="fa fa-euro"></i></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xs-12 col-sm-6">
+                <div class="form-group">
+                    <label for="project_costs">Project Costs</label>
+                    <div class="input-group">
+                        <input type="text" class="form-control" name="project_costs" id="project_costs" value="<?php echo $this->input->post('project_value'); ?>">
+                        <span class="input-group-addon"><i class="fa fa-euro"></i></span>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <?php if ($this->ion_auth->is_admin()): ?>
@@ -34,18 +104,6 @@
             </div>
 
         <?php endif; ?>
-
-        <div class="form-group">
-            <label for="status">Developers team:</label>
-            <ol>
-                <?php foreach($developersToProject as $developer): ?>
-                    <?php $userAsDeveloper = $this->ion_auth->user($developer->id_user)->row(); ?>
-                    <li>
-                        <?php echo $userAsDeveloper->first_name; ?>
-                    </li>
-                <?php endforeach; ?>
-            </ol>
-        </div>
 
         <?php if ($this->ion_auth->is_admin()): ?>
             <div class="form-group">

@@ -56,8 +56,8 @@ class Projects_model extends CI_Model
     }
 
     /*
- * Get all projects NO PAGINATION
- */
+     * Get all projects NO PAGINATION
+     */
     function get_all_projects_nd()
     {
         return $this->db->get('projects')->result_array();
@@ -73,20 +73,19 @@ class Projects_model extends CI_Model
     /*
      * function to add new projects
      */
-    function add_projects($params, $developersParam)
+    function add_projects($params, $developerParam)
     {
         $this->db->insert('projects',$params);
 
         //Get the id of the project
         $insert_id = $this->db->insert_id();
 
-        //Insert each developer and project
-        foreach ( $developersParam as $item ){
+        //Insert developer and project
            $this->db->insert('users_proiecte', array(
-               'id_user' => $item,
+               'id_user' => $developerParam,
                'id_proiect' => $insert_id
            ));
-        }
+
 
         return $insert_id;
     }
@@ -137,5 +136,18 @@ class Projects_model extends CI_Model
         $query = $this->db->get();
 
         return $query;
+    }
+
+    /*
+     * Get the developers.
+     */
+    function getDevelopers(){
+        $this->db->select('first_name, users.id');
+        $this->db->from('users');
+        $this->db->join('users_groups', 'user_id = users.id');
+        $this->db->where('group_id', 5);
+        $query = $this->db->get();
+
+        return $query->result_array();
     }
 }

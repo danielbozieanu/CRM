@@ -109,7 +109,7 @@ class Projects extends MY_Controller
 
                 $this->status,
 
-                anchor('projects/edit/'.$project->project_id,'<i class="fa fa-eye"></i>','class="btn btn-primary btn-xs" data-skin="skin-yellow"'),
+                anchor('projects/edit/'.$project->project_id,'<i class="fa fa-pencil"></i>','class="btn btn-primary btn-xs" data-skin="skin-yellow"'),
 
                '<a href=""  class="btn btn-danger btn-xs" data-toggle="modal" onclick="confirm_modal(\''.site_url('projects/remove/'.$project->project_id).'\',\'Title\')" > <i class="fa fa-trash-o"></i>  </a>'
             );
@@ -143,6 +143,9 @@ class Projects extends MY_Controller
      */
     function add()
     {
+        //DEVELOPERS
+       $this->data['developers'] = $this->Projects_model->getDevelopers();
+
         if (!$this->ion_auth->logged_in())
         {
             // redirect them to the login page
@@ -152,11 +155,14 @@ class Projects extends MY_Controller
             $this->data['clients'] = $this->ion_auth->users(2)->result();
 
             $this->load->library('form_validation');
-            $this->form_validation->set_rules('project_name', 'Nume', 'required',
+            $this->form_validation->set_rules('project_name', 'Name', 'required',
                 array('required' => 'Please type a name for project')
             );
             $this->form_validation->set_rules('project_client', 'Client', 'required|greater_than[0]',
                 array('greater_than' => 'Please select a client')
+            );
+            $this->form_validation->set_rules('project_start_date', 'Start project date', 'required',
+                array('required' => 'Please insert start date for project')
             );
 
             //Verify if we have POST and if the form is validated
@@ -164,19 +170,17 @@ class Projects extends MY_Controller
                 $params = array(
                     'project_name' => $this->input->post('project_name'),
                     'project_client' => $this->input->post('project_client'),
-                    'project_created' => date('Y-m-d'),
+                    'project_created' => $this->input->post('project_start_date'),
+                    'project_estimate' => $this->input->post('project_estimation'),
+                    'project_final_client'  => $this->input->post('project_final_client'),
+                    'project_value' =>  $this->input->post('project_value'),
+                    'project_costs' =>  $this->input->post('project_costs')
                 );
 
                 //Get developers assigned to project
-                $developersInput = $this->input->post('developersToProject');
+                $developersInput = $this->input->post('developerToProject');
 
-                //Put developers to array
-                $developersParam = array();
-                foreach ($developersInput as $item) {
-                    array_push($developersParam, $item);
-                }
-
-                $this->Projects_model->add_projects($params, $developersParam);
+                $this->Projects_model->add_projects($params, $developersInput);
                 redirect('projects/index');
             } else {
                 $this->render('auth/projects_add');

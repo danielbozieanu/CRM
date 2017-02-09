@@ -8,5 +8,16 @@
         <script src="<?php echo base_url(); ?>assets/js/scripts.js"></script>
         <!-- Copy to clipboard Plugin -->
         <script src="<?php echo base_url();?>/assets/js/jquery.copy-to-clipboard.js"></script>
+        <!-- Date picker -->
+        <script src="<?php echo base_url();?>/assets/js/datepicker/bootstrap-datepicker.js"></script>
+        <?php if ($this->uri->segment(1) == 'projects' && $this->uri->segment(2) == 'add'): ?>
+        <script>
+            //Date picker
+            $('#datepicker').datepicker({
+                autoclose: true,
+                format: "yyyy-mm-dd"
+            });
+        </script>
+        <?php endif; ?>
     </body>
 </html>
