@@ -115,49 +115,55 @@ class Users extends Auth_Controller {
                 'id'    => 'first_name',
                 'type'  => 'text',
                 'value' => $this->form_validation->set_value('first_name'),
-                'class' => 'form-control'
+                'class' => 'form-control',
+                'required' => 'required'
             );
             $this->data['last_name'] = array(
                 'name'  => 'last_name',
                 'id'    => 'last_name',
                 'type'  => 'text',
                 'value' => $this->form_validation->set_value('last_name'),
-                'class' => 'form-control'
+                'class' => 'form-control',
+                'required' => 'required'
             );
             $this->data['identity'] = array(
                 'name'  => 'identity',
                 'id'    => 'identity',
                 'type'  => 'text',
                 'value' => $this->form_validation->set_value('identity'),
-                'class' => 'form-control'
+                'class' => 'form-control',
+                'required' => 'required'
             );
             $this->data['email'] = array(
                 'name'  => 'email',
                 'id'    => 'email',
                 'type'  => 'text',
                 'value' => $this->form_validation->set_value('email'),
-                'class' => 'form-control'
+                'class' => 'form-control email'
             );
             $this->data['company'] = array(
                 'name'  => 'company',
                 'id'    => 'company',
                 'type'  => 'text',
                 'value' => $this->form_validation->set_value('company'),
-                'class' => 'form-control'
+                'class' => 'form-control',
+                'required' => 'required'
             );
             $this->data['phone'] = array(
                 'name'  => 'phone',
                 'id'    => 'phone',
                 'type'  => 'text',
                 'value' => $this->form_validation->set_value('phone'),
-                'class' => 'form-control'
+                'class' => 'form-control',
+                'required' => 'required'
             );
             $this->data['role'] = array(
                 'name'  => 'role',
                 'id'    => 'role',
                 'type'  => 'text',
-                'class' => 'form-control',
+                'class' => 'form-control req',
                 'options' => array(
+                    ''  => '--- SELECT GROUP ---',
                     '2' => 'Account',
                     '5' => 'Developer',
                     '1' => 'Administrator'
@@ -168,14 +174,14 @@ class Users extends Auth_Controller {
                 'id'    => 'password',
                 'type'  => 'password',
                 'value' => $this->form_validation->set_value('password'),
-                'class' => 'form-control'
+                'class' => 'form-control passwordCheck'
             );
             $this->data['password_confirm'] = array(
                 'name'  => 'password_confirm',
                 'id'    => 'password_confirm',
                 'type'  => 'password',
                 'value' => $this->form_validation->set_value('password_confirm'),
-                'class' => 'form-control'
+                'class' => 'form-control passwordMatch'
             );
 
             $this->render('auth/create_user');

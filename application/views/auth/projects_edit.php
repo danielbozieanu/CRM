@@ -12,6 +12,30 @@
         </div>
 
         <div class="row">
+            <div class="col-xs-12 col-sm-12">
+                <div class="form-group">
+                    <label for="nume">Account:</label>
+                    <select disabled name="client" class="form-control">
+                        <option><?php echo $this->ion_auth->user($projects['project_client'])->row()->first_name.' '.$this->ion_auth->user($projects['project_client'])->row()->last_name; ?></option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-xs-12 col-sm-6">
+                <div class="form-group">
+                    <label for="project_account_phone">Phone:</label>
+                    <input disabled id="project_account_phone" name="project_account_phone" class="form-control" value="<?php echo $this->ion_auth->user($projects['project_client'])->row()->phone; ?>">
+                </div>
+            </div>
+            <div class="col-xs-12 col-sm-6">
+                <div class="form-group">
+                    <label for="project_account_email">Email:</label>
+                    <input disabled id="project_account_email" name="project_account_email" class="form-control" value="<?php echo $this->ion_auth->user($projects['project_client'])->row()->email; ?>">
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
             <div class="col-xs-12 col-sm-6">
                 <div class="form-group">
                     <label for="nume">Agency:</label>
@@ -31,19 +55,16 @@
 
         <div class="form-group">
             <label for="status">Developer:</label>
-            <?php var_dump($developersToProject);
-            die();?>
 
-            <?php foreach($developersToProject as $developer): ?>
-                <?php $userAsDeveloper = $this->ion_auth->user($developer->id_user)->row(); ?>
+                <?php $userAsDeveloper = $this->ion_auth->user($developersToProject[0]['id_user'])->row(); ?>
                 <input disabled class="form-control" type="text" value="<?php echo $userAsDeveloper->first_name; ?>">
-            <?php endforeach; ?>
+
         </div>
 
         <div class="row">
             <div class="col-xs-12 col-sm-6">
                 <div class="form-group">
-                    <label for="datepicker">Start project date:</label>
+                    <label for="datepicker">Project start date:</label>
                     <div class="input-group date">
                         <div class="input-group-addon">
                             <i class="fa fa-calendar"></i>
@@ -69,9 +90,9 @@
         <div class="row">
             <div class="col-xs-12 col-sm-6">
                 <div class="form-group">
-                    <label for="project_value">Project Value</label>
+                    <label for="project_value">Project Value:</label>
                     <div class="input-group">
-                        <input type="text" class="form-control" name="project_value" id="project_value" value="<?php echo $this->input->post('project_value'); ?>">
+                        <input type="text" class="form-control" name="project_value" id="project_value" value="<?php echo ($this->input->post('project_value') ? $this->input->post('project_value') : $projects['project_value']); ?>">
                         <span class="input-group-addon"><i class="fa fa-euro"></i></span>
                     </div>
                 </div>
@@ -79,9 +100,9 @@
 
             <div class="col-xs-12 col-sm-6">
                 <div class="form-group">
-                    <label for="project_costs">Project Costs</label>
+                    <label for="project_costs">Project Costs:</label>
                     <div class="input-group">
-                        <input type="text" class="form-control" name="project_costs" id="project_costs" value="<?php echo $this->input->post('project_value'); ?>">
+                        <input type="text" class="form-control" name="project_costs" id="project_costs" value="<?php echo ($this->input->post('project_costs') ? $this->input->post('project_costs') : $projects['project_costs']); ?>">
                         <span class="input-group-addon"><i class="fa fa-euro"></i></span>
                     </div>
                 </div>
@@ -91,14 +112,20 @@
         <?php if ($this->ion_auth->is_admin()): ?>
 
             <div class="form-group">
-                <label for="status">Status</label>
+                <label for="status">Status:</label>
                 <select name="status" class="form-control" >
-                    <?php if ( $projects['project_status'] == 0 ) : ?>
-                        <option value="0">In work</option>
+                    <?php if ( $projects['project_status'] == 0 ): ?>
+                        <option value="0">Pending</option>
                         <option value="1">Done</option>
+                        <option value="-1">Canceled</option>
+                    <?php elseif ( $projects['project_status'] == 1 ) : ?>
+                        <option value="1">Done</option>
+                        <option value="0">Pending</option>
+                        <option value="-1">Canceled</option>
                     <?php else: ?>
+                        <option value="-1">Canceled</option>
+                        <option value="0">Pending</option>
                         <option value="1">Done</option>
-                        <option value="0">In work</option>
                     <?php endif; ?>
                 </select>
             </div>
@@ -148,12 +175,10 @@
 
                                             <?php if( $question['question_type'] == 'radio' ) : ?>
                                                 <span>Single choice</span>
-                                            <?php elseif ( $question['question_type'] == 'checkbox' ) : ?>
+                                            <?php elseif( $question['question_type'] == 'checkbox' ) : ?>
                                                 <span>Multiple choices</span>
-                                            <?php else: ?>
-                                                <option value="text">Text</option>
-                                                <option value="checkbox">Multiple choices</option>
-                                                <option value="radio">Single choice</option>
+                                            <?php elseif( $question['question_type'] == 'textarea' ) : ?>
+                                                <span>Text</span>
                                             <?php endif; ?>
 
                                     </div>
@@ -167,10 +192,19 @@
                                 <p>Answers</p>
                                 <?php foreach($all_answers as $answer) : ?>
                                     <?php if ($question['question_id'] == $answer['ans_question']) : ?>
-                                        <label>
-                                            <input disabled type="<?php echo $question['question_type']; ?>" <?php echo ($answer['ans_selected'] ? 'checked' :  ''); ?> >
-                                            <?php echo $answer['ans_value']; ?>
-                                        </label>
+                                       <?php if($question['question_type'] == 'textarea'): ?>
+                                        <blockquote>
+                                            <p>
+                                                <?php echo $answer['ans_value']; ?>
+                                            </p>
+                                        </blockquote>
+
+                                        <?php else: ?>
+                                            <label>
+                                                <input disabled type="<?php echo $question['question_type']; ?>" <?php echo ($answer['ans_selected'] ? 'checked' :  ''); ?> >
+                                                <?php echo $answer['ans_value']; ?>
+                                            </label>
+                                        <?php endif; ?>
                                         <br>
                                     <?php endif; ?>
                                 <?php endforeach; ?>

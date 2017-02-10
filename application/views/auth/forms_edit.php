@@ -19,7 +19,7 @@
             <label for="form_project" class="control-label">Form Project</label>
                 <select disabled name="form_project" class="form-control">
                     <?php
-                    foreach($all_projects as $project)
+                    foreach($all_done_projects as $project)
                     {
                         if ( $form['form_project'] == $project['project_id']) {
                             $selected = ($project['project_id'] == $form['form_project']) ? ' selected="selected"' : null;

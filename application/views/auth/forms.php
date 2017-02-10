@@ -7,6 +7,12 @@
 <?php endif; ?>
 
 <?php if($forms): ?>
+
+    <p>
+        <a href="<?php echo site_url('form/add'); ?>" class="btn btn-success">Add new form</a>
+    </p>
+
+
 <div class="box">
     <div class="box-header with-border">
         <h3 class="box-title">View all forms</h3>
@@ -77,6 +83,7 @@
     }
 </script>
 <?php else: ?>
+
     <div class="alert alert-warning alert-dismissible">
         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
         <h4><i class="icon fa fa-check"></i>Alert!</h4>

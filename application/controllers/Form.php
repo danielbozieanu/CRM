@@ -106,7 +106,7 @@ class Form extends MY_Controller
             } else {
 
                 $this->load->model('Projects_model');
-                $this->data['all_projects'] = $this->Projects_model->get_all_projects_nd();
+                $this->data['all_done_projects'] = $this->Projects_model->get_all_projects_done();
 
                 $this->render('auth/forms_add');
             }
@@ -163,7 +163,7 @@ class Form extends MY_Controller
 
                     //Get all projects for select option
                     $this->load->model('Projects_model');
-                    $this->data['all_projects'] = $this->Projects_model->get_all_projects_nd();
+                    $this->data['all_done_projects'] = $this->Projects_model->get_all_projects_done();
 
                     //Get all form questions
                     $this->load->model('Question_model');

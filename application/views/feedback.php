@@ -41,6 +41,12 @@
                             <h2 class="box-title"><?php echo $question['question_label']; ?></h2>
                             <input type="hidden" name="qId[]" value="<?php echo $question['question_id']; ?>">
                         </div>
+                <?php if ($question['question_type']=='textarea'):?>
+                    <?php $textareas++; ?>
+                    <input type="hidden" name="textareasQid[]" value="<?php echo $question['question_id']; ?>">
+                    <textarea name="textAreas[]" id=""></textarea>
+                <?php endif; ?>
+
                 <?php if ($question['question_type']=='radio') {  $radioAns++; } ?>
                 <div class="form-group">
                 <?php foreach($all_answers as $answer) : ?>
@@ -50,8 +56,8 @@
                             <label>
                                 <?php if ( $question['question_type'] == 'radio' ) : ?>
                                 <input type="<?php echo $question['question_type']; ?>" name="radios<?php echo $radioAns; ?>[]" value="<?php echo $answer['ans_id'] ?>">
-                                <?php else: ?>
-                                    <input type="hidden" name="<?php echo $question['question_id'] ?>">
+                                <?php elseif( $question['question_type'] == 'checkbox' ): ?>
+                                <input type="hidden" name="<?php echo $question['question_id'] ?>">
                                 <input type="<?php echo $question['question_type']; ?>" name="checked[]" value="<?php echo $answer['ans_id'] ?>">
                                 <?php endif; ?>
                                 <?php echo $answer['ans_value']; ?>

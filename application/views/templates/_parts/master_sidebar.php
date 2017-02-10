@@ -41,21 +41,7 @@
             <li class="<?php if($this->uri->segment(1)=="projects"){echo "active";}?>"><?php echo anchor("projects/", ' <i class="fa fa-suitcase"></i> <span>Projects</span>'); ?>
             </li>
 
-            <li class="treeview <?php if($this->uri->segment(1)=="form"){echo "active";}?>">
-                <a href="#"><i class="fa fa-check-square-o"></i><span>Forms</span> <span class="pull-right-container"><i class="fa fa-angle-left pull-right"></i></span></a>
-
-                <ul class="treeview-menu">
-
-                    <li class="<?php if($this->uri->segment(1)=="form" && $this->uri->segment(2)== NULL){echo "active";}?>">
-                        <?php echo anchor("form/", ' <i class="fa fa-list-alt"></i><span>View</span> <span class="pull-right-container"></span>'); ?>
-                    </li>
-
-                    <?php if ($this->ion_auth->is_admin()): ?>
-                        <li class="<?php if($this->uri->segment(2)=="add"){echo "active";}?>">
-                            <?php echo anchor("form/add", ' <i class="fa fa-plus-circle"></i> Add new'); ?>
-                        </li>
-                    <?php endif; ?>
-                </ul>
+            <li class="<?php if($this->uri->segment(1)=="form"){echo "active";}?>"><?php echo anchor("form/", ' <i class="fa fa-check-square-o"></i> <span>Forms</span>'); ?>
             </li>
         </ul>
         <!-- /.sidebar-menu -->

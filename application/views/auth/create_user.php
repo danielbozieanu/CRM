@@ -11,7 +11,7 @@
             <h3 class="box-title">Add new user</h3>
       </div>
 
-      <?php echo form_open("users/create_user");?>
+      <?php echo form_open("users/create_user", ['id'=>'form']);?>
 
       <div class="box-body">
             <div class="form-group">
@@ -91,3 +91,4 @@
       <?php echo form_close();?>
 
 </div>
+

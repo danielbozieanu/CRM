@@ -73,7 +73,7 @@ class Projects extends MY_Controller
         $this->table->set_heading(
             anchor('projects/index/'.$offset.'/project_id/'.$new_order,'#'),
             anchor('projects/index/'.$offset.'/project_name/'.$new_order, 'Project name'),
-            anchor('projects/index/'.$offset.'/project_client/'.$new_order, 'Client name'),
+            anchor('projects/index/'.$offset.'/project_client/'.$new_order, 'Agency'),
             anchor('projects/index/'.$offset.'/project_status/'.$new_order, 'Status'),
             [
                 'data' => 'Actiuni',
@@ -91,8 +91,10 @@ class Projects extends MY_Controller
 
             if ( $project->project_status == 1 ){
                 $this->status = '<span class="label label-success">Done</span>';
-            }else{
-                $this->status = '<span class="label label-primary">In work</span>';
+            }elseif ( $project->project_status == 0) {
+                $this->status = '<span class="label label-warning">Pending</span>';
+            }else {
+                $this->status = '<span class="label label-danger">Canceled</span>';
             }
 
             //Id of the project
@@ -101,11 +103,11 @@ class Projects extends MY_Controller
             //Get the client of the project
             $client = $this->ion_auth->user($projectClientId)->row();
 
-            $this->table->add_row($project->project_id.'.',
+            $this->table->add_row(($i+=1).'.',
 
                 $project->project_name,
 
-                $client->first_name,
+                $client->company,
 
                 $this->status,
 
@@ -161,7 +163,7 @@ class Projects extends MY_Controller
             $this->form_validation->set_rules('project_client', 'Client', 'required|greater_than[0]',
                 array('greater_than' => 'Please select a client')
             );
-            $this->form_validation->set_rules('project_start_date', 'Start project date', 'required',
+            $this->form_validation->set_rules('project_start_date', 'Project start date', 'required',
                 array('required' => 'Please insert start date for project')
             );
 
@@ -174,7 +176,8 @@ class Projects extends MY_Controller
                     'project_estimate' => $this->input->post('project_estimation'),
                     'project_final_client'  => $this->input->post('project_final_client'),
                     'project_value' =>  $this->input->post('project_value'),
-                    'project_costs' =>  $this->input->post('project_costs')
+                    'project_costs' =>  $this->input->post('project_costs'),
+                    'project_status' =>  $this->input->post('project_status')
                 );
 
                 //Get developers assigned to project
@@ -201,13 +204,32 @@ class Projects extends MY_Controller
             // check if the projects exists before trying to edit it
             $project = $this->Projects_model->get_project($id);
 
-            $this->data['developersToProject'] = $this->Projects_model->get_developers($id)->result();
+            $this->data['developersToProject'] = $this->Projects_model->get_developers($id)->result_array();
+//            echo '<pre>';
+//            var_dump($this->data['developersToProject']);
+//            echo '</pre>';
+//            die();
 
             if (isset($project['project_id']) && $this->ion_auth->is_admin()) {
                 if (isset($_POST) && count($_POST) > 0) {
+
+                    //set null finished date if not done
+                    if ($this->input->post('status') != 1){
+                        $dateFinished = NULL;
+                    }else{
+                        $dateFinished = date('Y-m-d');
+                    }
+
                     $params = array(
                         'project_name' => $this->input->post('nume'),
                         'project_status' => $this->input->post('status'),
+                        'project_final_client' => $this->input->post('project_final_client'),
+                        'project_created' => $this->input->post('project_start_date'),
+                        'project_created' => $this->input->post('project_start_date'),
+                        'project_estimate' => $this->input->post('project_estimation'),
+                        'project_value' => $this->input->post('project_value'),
+                        'project_costs' => $this->input->post('project_costs'),
+                        'project_finished' => $dateFinished
                     );
 
                     $this->Projects_model->update_projects($id, $params);

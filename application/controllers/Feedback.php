@@ -13,6 +13,7 @@ class Feedback extends MY_Controller
     public function index($form_slug)
     {
         $this->data['radioAns'] = 0;
+        $this->data['textareas'] = 0;
         // check if the form exists before trying to edit it
         $form = $this->Form_model->get_form_slug($form_slug);
 
@@ -63,14 +64,23 @@ class Feedback extends MY_Controller
 
         //Count answers to make sure that each question have an answer
         $answersCount = count($this->input->post('checked'));
-        $minAnswers = $this->input->post('minAnswers');
+        $minAnswers = intval($this->input->post('minAnswers'));
 
-        if (isset($_POST) && count($_POST) >0 && ($answersCount >= $minAnswers) && ( count($radioAnswers) == $radiosCount ) && $this->form_validation->run()){
+
+//    OLD IF    if (isset($_POST) && count($_POST) >0 && ($answersCount >= $minAnswers) && ( count($radioAnswers) == $radiosCount ) && $this->form_validation->run())
+
+            if (isset($_POST) && count($_POST) >0 && ( count($radioAnswers) == $radiosCount ) && $this->form_validation->run()){
         //Form Id for updating status
         $form_id = $this->input->post('form_id');
 
         //Checked answers
         $checked = array_merge($this->input->post('checked'),$radioAnswers);
+
+        //Textareas answers
+        $textAnswers = $this->input->post('textAreas');
+
+        //Question id for textareas
+        $textAreasQuestionId = $this->input->post('textareasQid');
 
         $this->load->model('Feedback_model');
 
@@ -81,6 +91,9 @@ class Feedback extends MY_Controller
         foreach ( $checked as $answer){
             $this->Feedback_model->update_answers($answer);
         }
+
+        //Insert textareas answers
+            $this->Feedback_model->insert_textarea_answers( $textAnswers, $textAreasQuestionId);
 
         redirect('feedback/succes');
         } else{

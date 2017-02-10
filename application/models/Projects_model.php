@@ -56,7 +56,18 @@ class Projects_model extends CI_Model
     }
 
     /*
-     * Get all projects NO PAGINATION
+     * Get all done projects
+     */
+    function get_all_projects_done()
+    {
+        $this->db->select('*');
+        $this->db->from('projects');
+        $this->db->where('project_status', 1);
+        return $this->db->get()->result_array();
+    }
+
+    /*
+     * Get all project no pagination
      */
     function get_all_projects_nd()
     {
