@@ -20,8 +20,8 @@
                 <h3 class="box-title">Projects</h3>
             </div>
             <!-- /.box-header -->
-            <div class="box-body">
-                <div class="data"><?php echo $table; ?></div>
+            <div class="box-body table-responsive">
+                <?php echo $table; ?>
             </div>
             <!-- /.box-body -->
             <div class="box-footer clearfix">

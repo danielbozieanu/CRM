@@ -86,6 +86,22 @@
             </div>
         </div>
 
+        <?php if ( $projects['project_status'] == 1 && $projects['project_finished']): ?>
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="form-group">
+                        <label for="project_finished">Finished date:</label>
+                        <div class="input-group date">
+                            <div class="input-group-addon">
+                                <i class="fa fa-calendar"></i>
+                            </div>
+                            <input disabled id="datepicker" name="project_start_date" type="text" class="form-control pull-right" name="project_start_date" value="<?php echo $projects['project_finished']; ?>"/>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <?php endif; ?>
 
         <div class="row">
             <div class="col-xs-12 col-sm-6">
@@ -109,7 +125,14 @@
             </div>
         </div>
 
-        <?php if ($this->ion_auth->is_admin()): ?>
+    <?php if ($this->ion_auth->is_admin()): ?>
+
+        <?php if ( $form && $projects['project_status'] == 1) : ?>
+        <div class="form-group">
+            <label for="status">Status:</label>
+            <input disabled type="text" class="form-control" value="Done">
+        </div>
+        <?php else: ?>
 
             <div class="form-group">
                 <label for="status">Status:</label>
@@ -129,10 +152,11 @@
                     <?php endif; ?>
                 </select>
             </div>
+        <?php endif; ?>
 
         <?php endif; ?>
 
-        <?php if ($this->ion_auth->is_admin()): ?>
+        <?php if ($this->ion_auth->is_admin() && !($form && $projects['project_status'] == 1) ): ?>
             <div class="form-group">
                 <button class="btn btn-success" type="submit">Save</button>
             </div>

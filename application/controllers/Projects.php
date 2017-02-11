@@ -76,8 +76,8 @@ class Projects extends MY_Controller
             anchor('projects/index/'.$offset.'/project_client/'.$new_order, 'Agency'),
             anchor('projects/index/'.$offset.'/project_status/'.$new_order, 'Status'),
             [
-                'data' => 'Actiuni',
-                'colspan' => 2,
+                'data' => 'Actions',
+                'colspan' => 3,
                 'style' => 'width:5%'
             ]
         );
@@ -111,7 +111,9 @@ class Projects extends MY_Controller
 
                 $this->status,
 
-                anchor('projects/edit/'.$project->project_id,'<i class="fa fa-pencil"></i>','class="btn btn-primary btn-xs" data-skin="skin-yellow"'),
+                anchor('projects/view/'.$project->project_id,'<i class="fa fa-eye"></i>','class="btn btn-primary btn-xs" data-skin="skin-yellow"'),
+
+                anchor('projects/edit/'.$project->project_id,'<i class="fa fa-pencil"></i>','class="btn btn-warning btn-xs" data-skin="skin-yellow"'),
 
                '<a href=""  class="btn btn-danger btn-xs" data-toggle="modal" onclick="confirm_modal(\''.site_url('projects/remove/'.$project->project_id).'\',\'Title\')" > <i class="fa fa-trash-o"></i>  </a>'
             );
@@ -285,17 +287,37 @@ class Projects extends MY_Controller
 
 
 
-//    //Return all available project_clients
-//   function getAllproject_clients(){
-//        if (empty($offset)) $offset = 0;
-//        if (empty($order_column)) $order_column = 'id_project_client';
-//        if (empty($order_type)) $order_type = 'asc';
-//
-//       $this->load->model('project_clienti_model');
-//
-//       $availableproject_clients = $this->project_clienti_model->get_all_project_clienti($this->limit, $offset, $order_column, $order_type)->result();
-//
-//       return $availableproject_clients;
-//
-//    }
+    /*
+    * Editing a projects
+    */
+    function view($id)
+    {
+        if (!$this->ion_auth->logged_in())
+        {
+            // redirect them to the login page
+            redirect('user/login', 'refresh');
+        } else {
+            // check if the projects exists before trying to edit it
+            $project = $this->Projects_model->get_project($id);
+
+            $this->data['developersToProject'] = $this->Projects_model->get_developers($id)->result_array();
+
+
+            if (isset($project['project_id'])) {
+                    //Get the form for project
+                    $this->load->model('Form_model');
+                    $this->data['form'] = $this->Form_model->get_project_form($id);
+
+                    //Get all form questions
+                    $this->load->model('Question_model');
+                    $this->data['all_questions'] = $this->Question_model->get_all_questions($this->data['form']['form_id']);
+
+                    $this->data['all_answers'] = $this->Question_model->get_answers();
+
+                    $this->data['projects'] = $this->Projects_model->get_project($id);
+                    $this->render('auth/project_view');
+            } else
+                show_error('The projects you are trying to view does not exist or you are not logged in.');
+        }
+    }
 }

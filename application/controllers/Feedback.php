@@ -32,7 +32,7 @@ class Feedback extends MY_Controller
 
             $this->data['all_answers'] = $this->Question_model->get_answers();
 
-            $this->render('feedback');
+            $this->render('feedback_view','feedback_master');
         } else{
             //redirect to login page
             header( "refresh:5;url=../../");
@@ -112,11 +112,11 @@ class Feedback extends MY_Controller
     }
 
 
-//    /*
-//     * Render page
-//     */
-//    protected function render($the_view = NULL, $template = '')
-//    {
-//        parent::render($the_view, $template);
-//    }
+    /*
+     * Render page
+     */
+    protected function render($the_view = NULL, $template = '')
+    {
+        parent::render($the_view, $template);
+    }
 }

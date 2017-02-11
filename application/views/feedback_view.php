@@ -8,7 +8,7 @@
         </div>
 
         <?php echo validation_errors(); ?>
-        <?php echo form_open('feedback/send/','id="feedbackForm"'); ?>
+        <?php echo form_open('feedback/send/','id="form"'); ?>
 
         <div class="box-body">
 
@@ -44,7 +44,7 @@
                 <?php if ($question['question_type']=='textarea'):?>
                     <?php $textareas++; ?>
                     <input type="hidden" name="textareasQid[]" value="<?php echo $question['question_id']; ?>">
-                    <textarea name="textAreas[]" id=""></textarea>
+                    <textarea class="form-control" required name="textAreas[]" id=""></textarea>
                 <?php endif; ?>
 
                 <?php if ($question['question_type']=='radio') {  $radioAns++; } ?>
