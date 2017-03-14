@@ -24,7 +24,15 @@
 
             <p>
                   <?php echo lang('edit_user_company_label', 'company');?> <br />
-                  <?php echo form_input($company);?>
+                <select name="company" id="" class="form-control">
+                    <?php  foreach ($agencies as $agency): ?>
+                        <?php if ($agency->id == $user->company): ?>
+                            <option selected value="<?php echo $agency->id ?>"><?php echo $agency->agency_name; ?></option>
+                        <?php else: ?>
+                            <option value="<?php echo $agency->id ?>"><?php echo $agency->agency_name ?></option>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+                </select>
             </p>
 
             <p>
@@ -69,8 +77,9 @@
 
             <?php echo form_hidden('id', $user->id);?>
             <?php echo form_hidden($csrf); ?>
-
-            <p><?php echo form_submit('submit', lang('edit_user_submit_btn'));?></p>
+          <br>
+            <p>
+                <?php echo form_submit('submit', lang('edit_user_submit_btn'), array('class'=>'btn btn-success'));?></p>
 
             <?php echo form_close();?>
       </div>

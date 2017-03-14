@@ -28,6 +28,9 @@
     <!--  Date picker  -->
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/datepicker3.css">
 
+    <!--  Data table  -->
+    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/datatables/dataTables.bootstrap.css">
+
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -36,7 +39,7 @@
     <![endif]-->
     <?php echo $before_closing_head;?>
 </head>
-<body class="skin-blue sidebar-mini">
+<body class="skin-blue sidebar-mini" >
         <div class="wrapper">
             <!-- Main Header -->
             <header class="main-header">

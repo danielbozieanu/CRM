@@ -16,7 +16,39 @@ class Form_model extends CI_Model
      */
     function get_form($form_id)
     {
+
         return $this->db->get_where('forms',array('form_id'=>$form_id))->row_array();
+    }
+
+    /*
+     * Get questions assigned to form
+     */
+
+    function get_form_questions($form_id)
+    {
+        $this->db->select('questions.question_score, questions.question_label, questions.question_type ,questions.question_id, GROUP_CONCAT(answers.ans_value) as all_answers, GROUP_CONCAT(answers.ans_score) as all_answers_score, GROUP_CONCAT(answers.ans_id) as all_answers_id');
+        $this->db->from('questions');
+        $this->db->where('questions.question_form', $form_id);
+        $this->db->join('answers', 'answers.ans_question = questions.question_id ', 'inner');
+
+        $this->db->group_by('questions.question_id');
+
+//        var_dump($this->db->get()->result_array());
+//        die();
+
+        return $this->db->get()->result_array();
+    }
+
+    /*
+     * Get questions with type textarea (have no answers yet)
+     */
+    function get_textarea_questions($form_id){
+        $this->db->select('questions.question_label, questions.question_type, questions.question_id');
+        $this->db->from('questions');
+        $this->db->where('questions.question_form', $form_id);
+        $this->db->where('questions.question_type', 'textarea');
+
+        return $this->db->get()->result_array();
     }
 
     /*
@@ -24,16 +56,16 @@ class Form_model extends CI_Model
      */
     function get_form_slug($form_slug)
     {
-        return $this->db->get_where('forms',array('form_slug'=>$form_slug))->row_array();
+        return $this->db->get_where('projects',array('form_slug'=>$form_slug))->row_array();
     }
 
-    /*
-     * Get form by project id
-     */
-    function get_project_form($project_id)
-    {
-        return $this->db->get_where('forms',array('form_project'=>$project_id))->row_array();
-    }
+//    /*
+//     * Get form by project id
+//     */
+//    function get_project_form($project_id)
+//    {
+//        return $this->db->get_where('forms',array('form_project'=>$project_id))->row_array();
+//    }
 
 
     /*
@@ -47,9 +79,10 @@ class Form_model extends CI_Model
     /*
      * function to add new form
      */
-    function add_form($params, $q, $a, $qId, $qType)
+    function add_form($params, $q, $a, $qId, $qType, $answersScore, $questionsScore)
     {
-
+//        var_dump($scores);
+//        die();
         $this->db->insert('forms',$params);
         $formId = $this->db->insert_id();
 
@@ -59,9 +92,40 @@ class Form_model extends CI_Model
             $this->db->insert('questions', array(
                 'question_label' => $qItem,
                 'question_form' => $formId,
+                'question_type' => $qType[$qkey],
+                'question_score' => $questionsScore[$qkey]
+            ));
+
+            $questId = $this->db->insert_id();
+
+            for($i=0; $i<$questionsCount; $i++){
+                if ($qId[$i]==$qkey){
+                    $this->db->insert('answers', array(
+                        'ans_question' => $questId,
+                        'ans_value' => $a[$i],
+                        'ans_score' => $answersScore[$i]+1
+                    ));
+                }
+            }
+        }
+
+        return $formId;
+    }
+
+    /*
+    * Add new questions/answers to form
+    */
+    function add_questions($formId, $q, $a, $qId, $qType){
+
+        $questionsCount = count($qId);
+        //Insert data in tables
+        foreach ($q as $qkey => $qItem){
+            $this->db->insert('questions', array(
+                'question_label' => $qItem,
+                'question_form' => $formId,
                 'question_type' => $qType[$qkey]
             ));
-//        var_dump($qkey);
+
             $questId = $this->db->insert_id();
 
             for($i=0; $i<$questionsCount; $i++){
@@ -73,6 +137,7 @@ class Form_model extends CI_Model
                 }
             }
         }
+
     }
 
     /*
@@ -106,5 +171,46 @@ class Form_model extends CI_Model
         {
             return "Error occuring while deleting form";
         }
+    }
+
+    /*
+     * Delete specific question
+     */
+    function delete_question($id){
+        $this->db->where('question_id', $id);
+        $this->db->delete('questions');
+    }
+
+    /*
+     * Delete specific question
+     */
+    function delete_answer($answerId, $questionId){
+        $this->db->where('ans_id', $answerId);
+        $this->db->where('ans_question', $questionId);
+        $this->db->delete('answers');
+    }
+
+    /*
+     * Assign answers to project
+     */
+    function assign_answers($answers)
+    {
+        $this->db->insert('answers_project',$answers);
+    }
+
+    /*
+     * Assign questions to project
+     */
+    function assign_questions($question){
+        $this->db->insert('questions_project', $question);
+
+        //Get the id of the project
+        $insert_id = $this->db->insert_id();
+
+        return $insert_id;
+    }
+
+    function get_answer($id){
+        return $this->db->get_where('answers_project',array('id'=>$id))->result();
     }
 }

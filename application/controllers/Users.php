@@ -17,6 +17,8 @@ class Users extends Auth_Controller {
         $this->form_validation->set_error_delimiters($this->config->item('error_start_delimiter', 'ion_auth'), $this->config->item('error_end_delimiter', 'ion_auth'));
 
         $this->lang->load('auth');
+
+        $this->load->model('Agency_model');
     }
 
 
@@ -55,6 +57,8 @@ class Users extends Auth_Controller {
     public function create_user()
     {
         $this->data['title'] = $this->lang->line('create_user_heading');
+
+        $this->data['agencies'] = $this->Agency_model->get_all_agencies($limit=1000, $offset=0, $order_column='id', $order_type='asc')->result();
 
         if (!$this->ion_auth->logged_in() || !$this->ion_auth->is_admin())
         {
@@ -141,14 +145,7 @@ class Users extends Auth_Controller {
                 'value' => $this->form_validation->set_value('email'),
                 'class' => 'form-control email'
             );
-            $this->data['company'] = array(
-                'name'  => 'company',
-                'id'    => 'company',
-                'type'  => 'text',
-                'value' => $this->form_validation->set_value('company'),
-                'class' => 'form-control',
-                'required' => 'required'
-            );
+
             $this->data['phone'] = array(
                 'name'  => 'phone',
                 'id'    => 'phone',
@@ -161,7 +158,7 @@ class Users extends Auth_Controller {
                 'name'  => 'role',
                 'id'    => 'role',
                 'type'  => 'text',
-                'class' => 'form-control req',
+                'class' => 'form-control',
                 'options' => array(
                     ''  => '--- SELECT GROUP ---',
                     '2' => 'Account',
@@ -199,6 +196,10 @@ class Users extends Auth_Controller {
         }
 
         $user = $this->ion_auth->user($id)->row();
+
+        $this->data['agencies'] = $this->Agency_model->get_all_agencies($limit=1000, $offset=0, $order_column='id', $order_type='asc')->result();
+
+
         $groups=$this->ion_auth->groups()->result_array();
         $currentGroups = $this->ion_auth->get_users_groups($id)->result_array();
 
@@ -318,13 +319,13 @@ class Users extends Auth_Controller {
             'value' => $this->form_validation->set_value('last_name', $user->last_name),
             'class' => 'form-control'
         );
-        $this->data['company'] = array(
-            'name'  => 'company',
-            'id'    => 'company',
-            'type'  => 'text',
-            'value' => $this->form_validation->set_value('company', $user->company),
-            'class' => 'form-control'
-        );
+//        $this->data['company'] = array(
+//            'name'  => 'company',
+//            'id'    => 'company',
+//            'type'  => 'text',
+//            'value' => $this->form_validation->set_value('company', $user->company),
+//            'class' => 'form-control'
+//        );
         $this->data['phone'] = array(
             'name'  => 'phone',
             'id'    => 'phone',

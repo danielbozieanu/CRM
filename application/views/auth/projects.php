@@ -1,4 +1,13 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');?>
+
+<?php if ($this->session->flashdata('mailsent') !=NULL): ?>
+    <div class="alert alert-success alert-dismissible">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+        <h4><i class="icon fa fa-check"></i>Alert!</h4>
+        <?php echo $this->session->flashdata('mailsent');?>
+    </div>
+<?php endif; ?>
+
 <?php if ($noProjects) : ?>
     <div class="alert alert-warning alert-dismissible">
         <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
@@ -34,14 +43,6 @@
 </div>
 
 <?php $this->load->view('templates/_parts/danger_modal'); ?>
+<?php $this->load->view('templates/_parts/alert_modal'); ?>
 
-<script>
-    function confirm_modal(delete_url,title)
-    {
-        jQuery('.modal-danger').modal('show', {backdrop: 'static',keyboard :false});
-        jQuery(".modal-danger.grt").text(title);
-        document.getElementById('delete_link_m_n').setAttribute("href" , delete_url );
-        document.getElementById('delete_link_m_n').focus();
-    }
-</script>
 <?php endif; ?>

@@ -23,7 +23,7 @@
         <!-- /.content -->
     </div>
     <!-- /.content-wrapper -->
-
+</div>
 <?php
 $this->load->view('templates/_parts/master_sidebar');
 $this->load->view('templates/_parts/master_footer');

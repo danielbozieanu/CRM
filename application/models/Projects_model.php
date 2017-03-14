@@ -52,7 +52,6 @@ class Projects_model extends CI_Model
             $this->db->limit($limit, $offset);
             return $this->db->get();
         }
-
     }
 
     /*
@@ -160,5 +159,49 @@ class Projects_model extends CI_Model
         $query = $this->db->get();
 
         return $query->result_array();
+    }
+
+
+    /*
+     * Unassing answers to project
+     */
+    function unassign_questions($projectId){
+        $this->db->delete('questions_project', array(
+            'question_project'    => $projectId,
+        ));
+    }
+
+    /*
+     * Add reminder
+     */
+    function add_reminder($projectId){
+
+        $params = array(
+            'project' => $projectId,
+            'created' => date('Y-m-d')
+        );
+
+        $this->db->insert('reminders', $params);
+    }
+
+    /*
+     * Get reminder
+     */
+    function get_reminder($projectId){
+        $this->db->select('*');
+        $this->db->from('reminders');
+        $this->db->where('reminders.project', $projectId);
+
+        return $this->db->get()->row();
+    }
+
+    /*
+     * Update reminder
+     */
+    function update_reminder($projectId, $count){
+
+        $this->db->where('project', $projectId);
+        $this->db->set('count', $count);
+        $this->db->update('reminders');
     }
 }

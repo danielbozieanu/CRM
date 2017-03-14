@@ -45,7 +45,12 @@
                   <label for="company">
                         <?php echo lang('create_user_company_label', 'company');?>
                   </label>
-                  <?php echo form_input($company);?>
+                <select required name="company" id="" class="form-control">
+                    <option value="">--- SELECT COMPANY ---</option>
+                    <?php foreach($agencies as $agency): ?>
+                        <option value="<?php echo $agency->id ?>"><?php echo $agency->agency_name ?></option>
+                    <?php endforeach; ?>
+                </select>
             </div>
 
 

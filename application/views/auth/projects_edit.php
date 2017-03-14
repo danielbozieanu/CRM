@@ -4,6 +4,7 @@
         <h2>View/edit project</h2>
     </div>
 
+
     <div class="box-body">
         <?php echo form_open('projects/edit/'.$projects['project_id']); ?>
         <div class="form-group">
@@ -40,7 +41,7 @@
                 <div class="form-group">
                     <label for="nume">Agency:</label>
                     <select disabled name="client" class="form-control">
-                        <option><?php echo $this->ion_auth->user($projects['project_client'])->row()->company; ?></option>
+                        <option><?php echo $this->Agency_model->get_agency($this->ion_auth->user($projects['project_client'])->row()->company)['agency_name']; ?></option>
                     </select>
                 </div>
             </div>
@@ -127,11 +128,33 @@
 
     <?php if ($this->ion_auth->is_admin()): ?>
 
-        <?php if ( $form && $projects['project_status'] == 1) : ?>
+        <?php if ( $projects['project_status'] == 1) : ?>
         <div class="form-group">
             <label for="status">Status:</label>
-            <input disabled type="text" class="form-control" value="Done">
+            <input disabled type="text" class="form-control" name="project_status_name" value="Done">
+            <input type="hidden" class="form-control" name="status" value="1">
         </div>
+
+        <!--    Check if we have form assigned    -->
+        <?php if (!$projects['form_completed']) : ?>
+        <div class="form-group">
+            <label for="form_template">Select form template</label>
+            <select required class="form-control" name="form_template" id="form_template">
+                    <?php if (!$projects['form_template']): ?>
+                        <option value="">--- SELECT FORM ---</option>
+                    <?php endif; ?>
+                    <?php foreach ($all_forms as $form): ?>
+                        <?php if ($form['form_id'] == $projects['form_template']): ?>
+                        <option selected value="<?php echo $form['form_id'] ?>"><?php echo $form['form_name']; ?></option>
+                        <?php else: ?>
+                        <option value="<?php echo $form['form_id'] ?>"><?php echo $form['form_name']; ?></option>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+
+            </select>
+        </div>
+        <?php endif; ?>
+
         <?php else: ?>
 
             <div class="form-group">
@@ -156,28 +179,36 @@
 
         <?php endif; ?>
 
-        <?php if ($this->ion_auth->is_admin() && !($form && $projects['project_status'] == 1) ): ?>
+        <?php if ($this->ion_auth->is_admin()): ?>
             <div class="form-group">
-                <button class="btn btn-success" type="submit">Save</button>
+                <button class="btn btn-success pull-left" type="submit">Save</button>
+
+            <?php if(!$projects['form_completed'] && $projects['project_status'] && $projects['form_template']) : ?>
+               <a href="#" class="pull-left btn btn-warning" data-target="#myModal" data-toggle="modal" style="margin-left: 10px;" onclick="confirm_modal('<?php echo base_url().'projects/update_project_form/'.$projects['project_id'] ?>', 'You want to update the form?' ,'Yes, update it' ,'modal-warning')">Update form</a>
+            <?php endif; ?>
+
+                <a class="btn btn-primary pull-right" href="..">Cancel</a>
             </div>
         <?php endif; ?>
 
+
         <?php echo form_close(); ?>
 
-        <div class="project-form">
+        <div class="project-form" style="clear:both;">
+            <br><br>
 
-            <?php if ( $form && $projects['project_status'] == 1) : ?>
+            <?php if ( $projects['form_template'] && $projects['project_status'] == 1) : ?>
                 <div class="box-header with-border">
                    <h1 class="box-title">Form assigned to this project</h1>
                 </div>
 
                 <div class="form-group">
                     <label for="">Form url:</label>
-                    <input class="form-control" type="text" value="<?php echo base_url().'feedback/'.$form['form_slug']; ?>" disabled>
+                    <input class="form-control" type="text" value="<?php echo base_url().'feedback/index/'.$projects['form_slug']; ?>" disabled>
                 </div>
 
                 </div>
-                <?php foreach ($all_questions as $key => $question): ?>
+                <?php foreach ($all_project_questions as $key => $question): ?>
                     <div class="box-group" id="accordion">
                         <div class="panel box box-primary">
                             <div class="box-header with-border">
@@ -215,18 +246,18 @@
                             <div class="form-group">
                                 <p>Answers</p>
                                 <?php foreach($all_answers as $answer) : ?>
-                                    <?php if ($question['question_id'] == $answer['ans_question']) : ?>
+                                    <?php if ($question['id'] == $answer['answer_question']) : ?>
                                        <?php if($question['question_type'] == 'textarea'): ?>
                                         <blockquote>
                                             <p>
-                                                <?php echo $answer['ans_value']; ?>
+                                                <?php echo $answer['answer_value']; ?>
                                             </p>
                                         </blockquote>
 
                                         <?php else: ?>
                                             <label>
-                                                <input disabled type="<?php echo $question['question_type']; ?>" <?php echo ($answer['ans_selected'] ? 'checked' :  ''); ?> >
-                                                <?php echo $answer['ans_value']; ?>
+                                                <input disabled type="<?php echo $question['question_type']; ?>" <?php echo ($answer['answer_selected'] ? 'checked' :  ''); ?> >
+                                                <?php echo $answer['answer_value']; ?>
                                             </label>
                                         <?php endif; ?>
                                         <br>
@@ -242,12 +273,15 @@
                     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
                     <h4><i class="icon fa fa-warning"></i> Alert!</h4>
                     Project done, but no form was generated.
-                    <a href="<?php echo base_url().'form/add'; ?>">Do it now!</a>
+                    Do it now!
                 </div>
             <?php endif; ?>
         </div>
 
     </div>
 </div>
+
+<?php $this->load->view('templates/_parts/alert_modal'); ?>
+
 
 

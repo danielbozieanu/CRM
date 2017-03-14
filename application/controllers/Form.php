@@ -44,19 +44,19 @@ class Form extends MY_Controller
         } else {
             $this->load->library('form_validation');
 
-            $this->form_validation->set_rules('form_project', 'Form Project', 'required');
             $this->form_validation->set_rules('question[]', 'Questions', 'required');
             $this->form_validation->set_rules('qType[]', 'Question type', 'required');
             $this->form_validation->set_rules('answers[]', 'Answers', 'required');
 
             if ($this->form_validation->run() && $this->ion_auth->is_admin()) {
                 $this->load->helper('string');
-                $slug = random_string('alnum', 16);
 
 
                 $questionsInput = $this->input->post('question');
                 $answersInput = $this->input->post('answers');
                 $questionType = $this->input->post('qType');
+                $answersScore = $this->input->post('answersScore');
+                $questionsScore = $this->input->post('qidScore');
 
 
                 //Question id for answer
@@ -96,13 +96,12 @@ class Form extends MY_Controller
 
                 $params = array(
                     'form_name' => $this->input->post('form_name'),
-                    'form_project' => $this->input->post('form_project'),
                     'form_created' => date('Y-m-d'),
-                    'form_slug' => $slug
                 );
 
-                $form_id = $this->Form_model->add_form($params, $questionsParam, $answersParam, $qIdParam, $qTypeParam);
-                redirect('form');
+                $form_id = $this->Form_model->add_form($params, $questionsParam, $answersParam, $qIdParam, $qTypeParam, $answersScore, $questionsScore);
+
+                redirect('form/edit/'.$form_id);
             } else {
 
                 $this->load->model('Projects_model');
@@ -133,16 +132,16 @@ class Form extends MY_Controller
 
                 if ($this->form_validation->run()) {
 
-                    //New questions
+                    //Updated questions
                     $newQuestions = $this->input->post('question');
                     $newQuestionsId = $this->input->post('qId');
 
-                    //New answers
+                    //Updated answers
                     $newAnswers = $this->input->post('answers');
                     $newAnswersQuestionId = $this->input->post('qIdAns');
                     $newAnswersId = $this->input->post('ansId');
 
-                    //New type
+                    //Updated type
                     $newQuestionType = $this->input->post('qType');
                     $newQuestionIdType = $this->input->post('qIdType');
 
@@ -150,7 +149,25 @@ class Form extends MY_Controller
                     $this->Question_model->update_question($newQuestionsId, $newQuestions, $newQuestionType);
                     $this->Question_model->update_answers($newAnswersId, $newAnswersQuestionId, $newAnswers);
 
-//                $questionsParam = array();
+                    //=========================================
+                        //NEW QUESTIONS
+                    //==========================================
+
+                    $questionsInput = $this->input->post('newQuestion');
+                    $answersInput = $this->input->post('newAnswers');
+                    $questionType = $this->input->post('newqType');
+
+
+                    //Question id for answer
+                    $qId = $this->input->post('newqid');
+
+                    if (count($questionsInput)>0 && count($questionType)>0){
+
+
+                            $form_id = $this->Form_model-> add_questions($form['form_id'], $questionsInput, $answersInput, $qId, $questionType);
+
+                redirect('form/edit/'.$form['form_id']);
+                    }
 
                     $params = array(
                         'form_name' => $this->input->post('form_name'),
@@ -198,6 +215,25 @@ class Form extends MY_Controller
             } else
                 show_error('The form you are trying to delete does not exist.');
         }
+    }
+
+    /*
+     * Deleting question
+     */
+    function delete_question($id)
+    {
+        $this->Form_model->delete_question($id);
+
+        redirect($_SERVER['HTTP_REFERER']);
+    }
+
+    /*
+     * Delete answer
+     */
+    function delete_answer($answerId, $questionId){
+        $this->Form_model->delete_answer($answerId, $questionId);
+
+        redirect($_SERVER['HTTP_REFERER']);
     }
 
     /*

@@ -44,6 +44,7 @@ class Question_model extends CI_Model
         return $questions->result_array();
     }
 
+
     /*
      * function to add new question
      */
@@ -83,12 +84,39 @@ class Question_model extends CI_Model
         }
     }
 
+    /*
+     * Get answers to display on edit form page
+     */
     function get_answers(){
         $this->db->select('*');
         $this->db->from('answers');
         $answers = $this->db->get();
 
         return $answers->result_array();
+    }
+
+    /*
+     * Get answers to display on project page
+     */
+    function get_project_answers($projectId){
+        $this->db->select('*');
+        $this->db->from('answers_project');
+        $this->db->where('answers_project.answer_project', $projectId);
+        $answers = $this->db->get();
+
+        return $answers->result_array();
+    }
+
+    /*
+     * Get questions for project
+     */
+    function get_project_questions($projectId){
+        $this->db->select('*');
+        $this->db->from('questions_project');
+        $this->db->where('questions_project.question_project', $projectId);
+        $questions = $this->db->get();
+
+        return $questions->result_array();
     }
 
     function update_answers($answer_id, $question_id,$params){

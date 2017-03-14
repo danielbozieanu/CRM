@@ -1,5 +1,8 @@
 <?php
-class Dashboard extends MY_Controller {
+defined('BASEPATH') OR exit('No direct script access allowed');
+
+class Dashboard extends MY_Controller
+{
     public function __construct()
     {
         parent::__construct();
@@ -15,11 +18,10 @@ class Dashboard extends MY_Controller {
 
     public function index()
     {
-        if (!$this->ion_auth->logged_in())
-        {
+        if (!$this->ion_auth->logged_in()) {
             // redirect them to the login page
             redirect('user/login', 'refresh');
-        }else {
+        } else {
             $this->render('auth/dashboard');
         }
     }

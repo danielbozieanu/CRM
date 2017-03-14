@@ -147,18 +147,18 @@
         <div class="project-form">
 
     <!--  Verify if project done and exists form for it  -->
-    <?php if ( $form && $projects['project_status'] == 1) : ?>
+    <?php if ( $projects['project_status'] == 1) : ?>
             <div class="box-header with-border">
                 <h1 class="box-title">Form assigned to this project</h1>
             </div>
 
             <div class="form-group">
                 <label for="">Form url:</label>
-                <input class="form-control" type="text" value="<?php echo base_url().'feedback/'.$form['form_slug']; ?>" disabled>
+                <input class="form-control" type="text" value="<?php echo base_url().'feedback/index/'.$projects['form_slug']; ?>" disabled>
             </div>
 
         </div>
-    <?php foreach ($all_questions as $key => $question): ?>
+    <?php foreach ($all_project_questions as $key => $question): ?>
         <div class="box-group" id="accordion">
             <div class="panel box box-primary">
                 <div class="box-header with-border">
@@ -195,19 +195,20 @@
                 <div class="box-body">
                     <div class="form-group">
                         <p>Answers</p>
+
                         <?php foreach($all_answers as $answer) : ?>
-                            <?php if ($question['question_id'] == $answer['ans_question']) : ?>
+                            <?php if ($question['id'] == $answer['answer_question']) : ?>
                                 <?php if($question['question_type'] == 'textarea'): ?>
                                     <blockquote>
                                         <p>
-                                            <?php echo $answer['ans_value']; ?>
+                                            <?php echo $answer['answer_value']; ?>
                                         </p>
                                     </blockquote>
 
                                 <?php else: ?>
                                     <label>
-                                        <input disabled type="<?php echo $question['question_type']; ?>" <?php echo ($answer['ans_selected'] ? 'checked' :  ''); ?> >
-                                        <?php echo $answer['ans_value']; ?>
+                                        <input disabled type="<?php echo $question['question_type']; ?>" <?php echo ($answer['answer_selected'] ? 'checked' :  ''); ?> >
+                                        <?php echo $answer['answer_value']; ?>
                                     </label>
                                 <?php endif; ?>
                                 <br>

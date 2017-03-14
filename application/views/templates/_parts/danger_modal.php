@@ -8,10 +8,10 @@
                     <h4 class="modal-title">Danger!</h4>
                 </div>
                 <div class="modal-body">
-                    <p>Are you sure that want to delete?</p>
+                    <p class="grt"></p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-outline pull-left" data-dismiss="modal">Cancel</button>
                     <a id="delete_link_m_n" class="btn btn-outline" href="">Yes, delete it!</a>
                 </div>
             </div>
