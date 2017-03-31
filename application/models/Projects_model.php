@@ -35,6 +35,17 @@ class Projects_model extends CI_Model
         return $this->db->get();
     }
 
+    /*
+     * Get projects of developer
+     */
+    function get_developer_projects($developerId){
+        $this->db->select('*');
+        $this->db->from('users_proiecte');
+        $this->db->where('users_proiecte.id_user', $developerId);
+        $this->db->join('projects', 'project_id = id_proiect');
+        return $this->db->get()->result_array();
+    }
+
 
     /*
      * Get all projects
@@ -152,7 +163,7 @@ class Projects_model extends CI_Model
      * Get the developers.
      */
     function getDevelopers(){
-        $this->db->select('first_name, users.id');
+        $this->db->select('first_name, last_name, users.id');
         $this->db->from('users');
         $this->db->join('users_groups', 'user_id = users.id');
         $this->db->where('group_id', 5);

@@ -1,17 +1,32 @@
+<ul class="nav nav-tabs">
+    <li><?php echo anchor("reports/agency", 'By Agency'); ?></li>
+    <li class="active"><?php echo anchor("reports/client", 'By Client'); ?></li>
+    <li><?php echo anchor("reports/developer", 'By Developer'); ?></li>
+    <li><?php echo anchor("reports/daterange", 'By Date Range'); ?></li>
+</ul>
+<br>
 <div class="form-group">
     <div class="row">
         <div class="col-xs-12">
-            <label for="">Select agency</label>
+            <label for="">Select client</label>
         </div>
     </div>
     <div class="row">
-        <div class="col-xs-12 col-sm-10">
-            <select name="" id="agencySelect" class="form-control">
-                <option value="">--- select agency ---</option>
-                <?php foreach ($agencies as $agency): ?>
-                    <option value="<?php echo $agency['id']; ?>"><?php echo $agency['agency_name'] ?></option>
+        <div class="col-xs-12 col-sm-4">
+            <select name="" id="clientSelect" class="form-control">
+                <option value="000">---</option>
+                <?php foreach ($viewProjects as $project): ?>
+                    <option value="<?php echo $project; ?>"><?php echo $project; ?></option>
                 <?php endforeach; ?>
             </select>
+        </div>
+        <div class="col-xs-12 col-sm-4">
+            <div class="input-group">
+                <div class="input-group-addon">
+                    <i class="fa fa-calendar"></i>
+                </div>
+                <input type="text" class="form-control pull-right" id="daterangeSelect">
+            </div>
         </div>
 
         <div class="col-xs-12 col-sm-2">
@@ -25,7 +40,7 @@
         <div class="alert alert-info alert-dismissible">
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
             <h4><i class="icon fa fa-info"></i> Alert!</h4>
-            The agency was not selected or there is no data to display.
+            The client was not selected.
         </div>
     </div>
 </section>
@@ -35,6 +50,7 @@
 <script src="<?php echo base_url(); ?>assets/js/jquery-2.2.3.min.js"></script>
 
 <script>
+    var availableTags = [];
 
     $('#filterButton').click(function (e) {
 
@@ -45,13 +61,13 @@
 
         $.ajax({
             type: 'POST',
-            url: '/reports/get_agency_data/' + $('#agencySelect').val(),
+            url: '/reports/get_client_data/' + $('#clientSelect').val() + '/'  + $('#daterangeSelect').val().split(" - ")[0] + '/' + $('#daterangeSelect').val().split(" - ")[1],
             error: function () {
                 $('#reports-wrapper').empty();
 
                 var errorHtml = '';
 
-                errorHtml +=  '<div class="alert alert-warning alert-dismissible">';
+                errorHtml += '<div class="alert alert-warning alert-dismissible">';
                 errorHtml += '<button type="button" class="close" data-dismiss="warning" aria-hidden="true">×</button>';
                 errorHtml += '<h4><i class="icon fa fa-info"></i> Alert!</h4>';
                 errorHtml += 'There is no data to display!';
@@ -62,13 +78,18 @@
             success: function (data) {
 
                 for (var i = 0; i < data.length; i++) {
+
                     reports.push({
-                        answer_value: data[i].answer_value,
+                        answer_value: data[i].answers,
                         question_label: data[i].question_label,
-                        score: data[i].score.slice(data[i].answer_value.length, data[i].score.length - data[i].answer_value.length)
+                        score: data[i].scores,
+                        total: data[i].total,
                     });
+
                 }
 
+
+//                console.log(reports);
 
                 for (var i = 0; i < reports.length; i++) {
 
@@ -110,7 +131,7 @@
                                         "#947321",
                                         "#bdef13"
                                     ],
-                                    data: reports[i].score
+                                    data: reports[i].total
                                 }
                             ]
                         }
@@ -122,6 +143,3 @@
 
 
 </script>
-
-
-

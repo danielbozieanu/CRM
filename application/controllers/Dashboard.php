@@ -9,7 +9,10 @@ class Dashboard extends MY_Controller
         $this->data['page_title'] = 'CRM LOW - Dashboard';
         $this->data['page_description'] = 'Dashboard';
         $this->load->model('Projects_model');
+        $this->load->model('Agency_model');
         $this->data['projectsCount'] = count($this->Projects_model->get_all_projects_nd());
+        $this->data['agenciesCount'] = count($this->Agency_model->get_all_agencies_np());
+        $this->data['inWork'] = $this->data['projectsCount'] - count($this->Projects_model->get_all_projects_done());
 
         $group_id = 2; //your group id in database
         $this->data['clientsNumber'] = count($this->ion_auth->users($group_id)->result_array());

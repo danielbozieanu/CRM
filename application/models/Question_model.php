@@ -107,6 +107,15 @@ class Question_model extends CI_Model
         return $answers->result_array();
     }
 
+    function get_project_question_answers($questionId){
+        $this->db->select('*');
+        $this->db->from('answers_project');
+        $this->db->where('answers_project.answer_question', $questionId);
+        $answers = $this->db->get();
+
+        return $answers->result_array();
+    }
+
     /*
      * Get questions for project
      */

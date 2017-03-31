@@ -65,7 +65,7 @@
 
             <li class="<?php if ($this->uri->segment(1) == "reports") {
                 echo "active";
-            } ?>"><?php echo anchor("reports/", ' <i class="fa fa-line-chart" aria-hidden="true"></i> <span>Reports</span>'); ?>
+            } ?>"><?php echo anchor("reports/agency", ' <i class="fa fa-line-chart" aria-hidden="true"></i> <span>Reports</span>'); ?>
             </li>
         </ul>
         <!-- /.sidebar-menu -->

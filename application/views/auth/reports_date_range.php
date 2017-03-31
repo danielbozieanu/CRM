@@ -1,25 +1,25 @@
 <ul class="nav nav-tabs">
-    <li class="active"><?php echo anchor("reports/agency", 'By Agency'); ?></li>
+    <li><?php echo anchor("reports/agency", 'By Agency'); ?></li>
     <li><?php echo anchor("reports/client", 'By Client'); ?></li>
-    <li><?php echo anchor("reports/developer", 'By Developer'); ?></li>
-    <li><?php echo anchor("reports/daterange", 'By Date Range'); ?></li>
+    <li ><?php echo anchor("reports/developer", 'By Developer'); ?></li>
+    <li class="active"><?php echo anchor("reports/daterange", 'By Date Range'); ?></li>
 
 </ul>
 <br>
 <div class="form-group">
     <div class="row">
         <div class="col-xs-12">
-            <label for="">Select agency</label>
+            <label for="">Select date range</label>
         </div>
     </div>
     <div class="row">
         <div class="col-xs-12 col-sm-4">
-            <select name="" id="agencySelect" class="form-control">
-                <option value="000">---</option>
-                <?php foreach ($agencies as $agency): ?>
-                    <option value="<?php echo $agency['id']; ?>"><?php echo $agency['agency_name'] ?></option>
-                <?php endforeach; ?>
-            </select>
+            <div class="input-group">
+                <div class="input-group-addon">
+                    <i class="fa fa-calendar"></i>
+                </div>
+                <input type="text" class="form-control pull-right" id="daterangeSelect">
+            </div>
         </div>
         <div class="col-xs-12 col-sm-4">
             <div class="input-group">
@@ -29,7 +29,6 @@
                 <input type="text" class="form-control pull-right" id="daterangeSelect">
             </div>
         </div>
-
         <div class="col-xs-12 col-sm-2">
             <button id="filterButton" class="btn">Filter</button>
         </div>
@@ -41,7 +40,7 @@
         <div class="alert alert-info alert-dismissible">
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
             <h4><i class="icon fa fa-info"></i> Alert!</h4>
-            The agency was not selected.
+            The date range was not selected.
         </div>
     </div>
 </section>
@@ -51,6 +50,16 @@
 <script src="<?php echo base_url(); ?>assets/js/jquery-2.2.3.min.js"></script>
 
 <script>
+    var availableTags = [];
+
+    $.ajax({
+        type: 'POST',
+        url: '/reports/get_developer_data',
+        success: function (viewProjects) {
+            console.log(viewProjects);
+        }
+    });
+
 
     $('#filterButton').click(function (e) {
 
@@ -61,7 +70,7 @@
 
         $.ajax({
             type: 'POST',
-            url: '/reports/get_agency_data/' + $('#agencySelect').val() + '/'  + $('#daterangeSelect').val().split(" - ")[0] + '/' + $('#daterangeSelect').val().split(" - ")[1],
+            url: '/reports/get_daterange_data/' + $('#daterangeSelect').val().split(" - ")[0] + '/' + $('#daterangeSelect').val().split(" - ")[1],
             error: function () {
                 $('#reports-wrapper').empty();
 
@@ -87,6 +96,7 @@
                     });
 
                 }
+
 
 //                console.log(reports);
 

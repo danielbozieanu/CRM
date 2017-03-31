@@ -36,7 +36,7 @@ class Reports_model extends CI_Model
 
     function get_agency_data($agency)
     {
-        $this->db->select('agencies.agency_name, questions_project.question_label as question_label, GROUP_CONCAT(DISTINCT(answers_project.answer_value)) as answer_value, GROUP_CONCAT(answers_project.answer_selected) as score, projects.project_name as project_name');
+        $this->db->select('agencies.agency_name, questions_project.question_label as question_label, GROUP_CONCAT(DISTINCT(answers_project.answer_value)) as answer_value, GROUP_CONCAT(answers_project.answer_selected) as score, projects.project_name as project_name, SUM(answers_project.answer_selected) as score2');
         $this->db->from('agencies');
         $this->db->where('agencies.id', $agency);
         $this->db->join('projects', 'projects.project_client = ' . $agency, 'inner');
@@ -45,10 +45,9 @@ class Reports_model extends CI_Model
         $this->db->join('answers', 'answers.ans_id = answers_project.answer_answer');
         $this->db->where('questions_project.question_type != "textarea"');
         $this->db->where('answers_project.feedback_text', NULL);
-        $this->db->group_by(array('questions_project.question_label'));
+        $this->db->group_by('questions_project.question_label');
 
         $query = $this->db->get();
-
 
         $data = '';
 
@@ -60,6 +59,7 @@ class Reports_model extends CI_Model
                 $data[$key]->question_label = $row->question_label;
                 $data[$key]->answer_value = explode(',', $row->answer_value);
                 $data[$key]->score = explode(',', $row->score);
+                $data[$key]->score2 = $row->score2;
             }
         }
 

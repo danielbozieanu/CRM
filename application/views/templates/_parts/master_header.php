@@ -27,9 +27,13 @@
 
     <!--  Date picker  -->
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/datepicker3.css">
+    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/daterangepicker/daterangepicker.css">
 
     <!--  Data table  -->
     <link rel="stylesheet" href="<?php echo base_url(); ?>assets/datatables/dataTables.bootstrap.css">
+
+    <!--  Data table  -->
+    <link rel="stylesheet" href="<?php echo base_url(); ?>assets/select2/select2.css">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->

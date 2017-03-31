@@ -10,7 +10,7 @@
             <div class="icon">
                 <i class="ion ion-briefcase"></i>
             </div>
-            <a href="#" class="small-box-footer">See all <i class="fa fa-arrow-circle-right"></i></a>
+            <?php echo anchor("projects/add", ' Add new <i class="fa fa-arrow-circle-right"></i>', array('class'=>'small-box-footer')); ?>
         </div>
     </div>
     <!-- ./col -->
@@ -18,14 +18,14 @@
         <!-- small box -->
         <div class="small-box bg-green">
             <div class="inner">
-                <h3>x<sup style="font-size: 20px">%</sup></h3>
+                <h3><?php echo $agenciesCount; ?></h3>
 
-                <p>Satisfaction Rate</p>
+                <p>Agencies</p>
             </div>
             <div class="icon">
                 <i class="ion ion-stats-bars"></i>
             </div>
-            <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+            <?php echo anchor("agency", ' See all <i class="fa fa-arrow-circle-right"></i>', array('class'=>'small-box-footer')); ?>
         </div>
     </div>
     <!-- ./col -->
@@ -33,14 +33,14 @@
         <!-- small box -->
         <div class="small-box bg-red">
             <div class="inner">
-                <h3>65</h3>
+                <h3><?php echo $inWork; ?></h3>
 
                 <p>Projects in Work</p>
             </div>
             <div class="icon">
                 <i class="ion ion-pie-graph"></i>
             </div>
-            <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+            <?php echo anchor("projects", ' See all <i class="fa fa-arrow-circle-right"></i>', array('class'=>'small-box-footer')); ?>
         </div>
     </div>
     <!-- ./col -->
@@ -50,13 +50,12 @@
             <div class="inner">
                 <h3><?php echo $clientsNumber; ?></h3>
 
-                <p>Clients</p>
+                <p>Accounts</p>
             </div>
             <div class="icon">
                 <i class="ion ion-person-add"></i>
             </div>
-            <a href="#" class="small-box-footer">Add new client <i class="fa fa-arrow-circle-right"></i></a>
-        </div>
+            <?php echo anchor("users/create_user", ' Add new <i class="fa fa-arrow-circle-right"></i>', array('class'=>'small-box-footer')); ?>        </div>
     </div>
     <!-- ./col -->
 

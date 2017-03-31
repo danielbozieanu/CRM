@@ -1,3 +1,9 @@
+<ul class="nav nav-tabs">
+    <li class="active"><?php echo anchor("reports/agency", 'By Agency'); ?></li>
+    <li><a href="#tab_2" >Tab 2</a></li>
+    <li><a href="#tab_3" >Tab 3</a></li>
+</ul>
+<br>
 <div class="form-group">
     <label for="">Select form</label>
     <select name="" id="" class="form-control">

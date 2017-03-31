@@ -5,40 +5,36 @@ $.validator.addClassRules({
                 required: true,
                 email: true,
             },
-        "passwordCheck":
-            {
-                required: true,
-                minlength: 8
-            },
-        "passwordMatch":
-        {
+        "passwordCheck": {
+            required: true,
+            minlength: 8
+        },
+        "passwordMatch": {
             equalTo: "#password"
         },
-        "req":
-            {
-                required: true,
-                minlength: 10
-            },
-        "array":
-            {
-                required: true
-            }
+        "req": {
+            required: true,
+            minlength: 10
+        },
+        "array": {
+            required: true
+        }
 
     }
 );
 
 var validator = $('#form').validate({
-    rules:{
-        "question[]":{
+    rules: {
+        "question[]": {
             required: true
         },
-        "answers[]":{
-            required:true
-        },
-        "newQuestion[]":{
+        "answers[]": {
             required: true
         },
-        "newAnswers[]":{
+        "newQuestion[]": {
+            required: true
+        },
+        "newAnswers[]": {
             required: true
         }
 
@@ -56,8 +52,7 @@ var validator = $('#form').validate({
     errorPlacement: function (error, element) {
         error.insertAfter(element);
     },
-    messages:{
-    }
+    messages: {}
 });
 
 var validator = $('#feedback-form').validate({
@@ -74,7 +69,7 @@ var validator = $('#feedback-form').validate({
     errorClass: 'text-danger small error',
     errorPlacement: function (error, element) {
 
-        switch(element){
+        switch (element) {
             case element.attr("name") == "textAreas[]":
                 error.insertBefore(element);
                 break;
@@ -85,23 +80,21 @@ var validator = $('#feedback-form').validate({
                 console.log('default');
         }
     },
-    messages:{
-    }
+    messages: {}
 });
 
-    function resetFormValidator(formId) {
-        $(formId).removeData('validator');
-        $(formId).removeData('unobtrusiveValidation');
-        $.validator.unobtrusive.parse(formId);
-    }
+function resetFormValidator(formId) {
+    $(formId).removeData('validator');
+    $(formId).removeData('unobtrusiveValidation');
+    $.validator.unobtrusive.parse(formId);
+}
 
 //Modals
-function confirm_modal(url,title,button,color)
-{
+function confirm_modal(url, title, button, color) {
 
-    jQuery('.default-modal .modal').addClass(color).modal('show', {backdrop: 'static',keyboard :false});
+    jQuery('.default-modal .modal').addClass(color).modal('show', {backdrop: 'static', keyboard: false});
     jQuery('.default-modal .grt').text(title);
-    jQuery('#link_m_n').attr("href" , url ).text(button).focus();
+    jQuery('#link_m_n').attr("href", url).text(button).focus();
 
 }
 
@@ -111,3 +104,6 @@ $(function () {
     $("#data-table").DataTable();
 
 });
+
+$('#clientSelect').select2();
+$('#agencySelect').select2();
