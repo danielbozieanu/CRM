@@ -32,24 +32,49 @@ class Reports extends MY_Controller
         $projects = $this->Projects_model->get_all_projects_done();
 
         foreach ($projects as $key => $project) {
-            if (strtotime($from) <= strtotime($project['project_finished']) && strtotime($to) >= strtotime($project['project_finished']) && $agencyId == $project['project_agency'] && $project['form_template'] == 44 && $project['form_completed'] == 1) {
-                $questions = $this->Question_model->get_project_questions($project['project_id']);
 
-                foreach ($questions as $key2 => $question) {
-                    $answers[$key] = $this->Question_model->get_project_question_answers($question['id']);
-                    foreach ($answers[$key] as $key3 => $answer) {
+            $developerToProject = $this->Projects_model->get_developers($project['project_id'])->result_array();
 
-                        if ($question['question_type'] != 'textarea' && $answer['answer_question'] == $question['id']) {
+            if ($this->ion_auth->is_admin()) {
+                if (strtotime($from) <= strtotime($project['project_finished']) && strtotime($to) >= strtotime($project['project_finished']) && $agencyId == $project['project_agency'] && $project['form_template'] == 44 && $project['form_completed'] == 1) {
+                    $questions = $this->Question_model->get_project_questions($project['project_id']);
 
-                            $data[$key2]['question_label'] = $questions[$key2]['question_label'];
-                            $data[$key2]['answers'][$key3] = $answer['answer_value'];
+                    foreach ($questions as $key2 => $question) {
+                        $answers[$key] = $this->Question_model->get_project_question_answers($question['id']);
+                        foreach ($answers[$key] as $key3 => $answer) {
 
-                            $data[$key2]['scores'][$key][$key3] = $answer['answer_selected'];
+                            if ($question['question_type'] != 'textarea' && $answer['answer_question'] == $question['id']) {
+
+                                $data[$key2]['question_label'] = $questions[$key2]['question_label'];
+                                $data[$key2]['answers'][$key3] = $answer['answer_value'];
+
+                                $data[$key2]['scores'][$key][$key3] = $answer['answer_selected'];
+                            }
                         }
                     }
-                }
 
+                }
+            } else {
+                if (strtotime($from) <= strtotime($project['project_finished']) && strtotime($to) >= strtotime($project['project_finished']) && $agencyId == $project['project_agency'] && $project['form_template'] == 44 && $project['form_completed'] == 1 && ($this->ion_auth->user()->row()->id == $developerToProject[0]['id_user'] || $this->ion_auth->user()->row()->company == $project['project_agency'])) {
+                    $questions = $this->Question_model->get_project_questions($project['project_id']);
+
+                    foreach ($questions as $key2 => $question) {
+                        $answers[$key] = $this->Question_model->get_project_question_answers($question['id']);
+                        foreach ($answers[$key] as $key3 => $answer) {
+
+                            if ($question['question_type'] != 'textarea' && $answer['answer_question'] == $question['id']) {
+
+                                $data[$key2]['question_label'] = $questions[$key2]['question_label'];
+                                $data[$key2]['answers'][$key3] = $answer['answer_value'];
+
+                                $data[$key2]['scores'][$key][$key3] = $answer['answer_selected'];
+                            }
+                        }
+                    }
+
+                }
             }
+
         }
 
         header('Content-Type: application/json');
@@ -80,24 +105,48 @@ class Reports extends MY_Controller
         if ($client) {
             foreach ($projects as $key => $project) {
 
-                if (strtotime($from) <= strtotime($project['project_finished']) && strtotime($to) >= strtotime($project['project_finished']) && strtolower($client) == strtolower($project['project_final_client']) && $project['form_template'] == 44 && $project['form_completed'] == 1) {
+                $developerToProject = $this->Projects_model->get_developers($project['project_id'])->result_array();
 
-                    $questions = $this->Question_model->get_project_questions($project['project_id']);
+                if ($this->ion_auth->is_admin()) {
+                    if (strtotime($from) <= strtotime($project['project_finished']) && strtotime($to) >= strtotime($project['project_finished']) && strtolower($client) == strtolower($project['project_final_client']) && $project['form_template'] == 44 && $project['form_completed'] == 1) {
 
-                    foreach ($questions as $key2 => $question) {
-                        $answers[$key] = $this->Question_model->get_project_question_answers($question['id']);
-                        foreach ($answers[$key] as $key3 => $answer) {
+                        $questions = $this->Question_model->get_project_questions($project['project_id']);
 
-                            if ($question['question_type'] != 'textarea' && $answer['answer_question'] == $question['id']) {
+                        foreach ($questions as $key2 => $question) {
+                            $answers[$key] = $this->Question_model->get_project_question_answers($question['id']);
+                            foreach ($answers[$key] as $key3 => $answer) {
 
-                                $data[$key2]['question_label'] = $questions[$key2]['question_label'];
-                                $data[$key2]['answers'][$key3] = $answer['answer_value'];
+                                if ($question['question_type'] != 'textarea' && $answer['answer_question'] == $question['id']) {
 
-                                $data[$key2]['scores'][$key][$key3] = $answer['answer_selected'];
+                                    $data[$key2]['question_label'] = $questions[$key2]['question_label'];
+                                    $data[$key2]['answers'][$key3] = $answer['answer_value'];
+
+                                    $data[$key2]['scores'][$key][$key3] = $answer['answer_selected'];
+                                }
                             }
                         }
-                    }
 
+                    }
+                } else {
+                    if (strtotime($from) <= strtotime($project['project_finished']) && strtotime($to) >= strtotime($project['project_finished']) && strtolower($client) == strtolower($project['project_final_client']) && $project['form_template'] == 44 && $project['form_completed'] == 1 && ($this->ion_auth->user()->row()->id == $developerToProject[0]['id_user'] || $this->ion_auth->user()->row()->id == $project['project_client'] || $this->ion_auth->user()->row()->company == $project['project_agency'])) {
+
+                        $questions = $this->Question_model->get_project_questions($project['project_id']);
+
+                        foreach ($questions as $key2 => $question) {
+                            $answers[$key] = $this->Question_model->get_project_question_answers($question['id']);
+                            foreach ($answers[$key] as $key3 => $answer) {
+
+                                if ($question['question_type'] != 'textarea' && $answer['answer_question'] == $question['id']) {
+
+                                    $data[$key2]['question_label'] = $questions[$key2]['question_label'];
+                                    $data[$key2]['answers'][$key3] = $answer['answer_value'];
+
+                                    $data[$key2]['scores'][$key][$key3] = $answer['answer_selected'];
+                                }
+                            }
+                        }
+
+                    }
                 }
             }
         } else {
@@ -133,24 +182,52 @@ class Reports extends MY_Controller
 
             foreach ($projects as $key => $project) {
 
-                if (strtotime($from) <= strtotime($project['project_finished']) && strtotime($to) >= strtotime($project['project_finished']) && $project['form_template'] == 44 && $project['form_completed'] == 1) {
+                $developerToProject = $this->Projects_model->get_developers($project['project_id'])->result_array();
 
-                    $questions = $this->Question_model->get_project_questions($project['project_id']);
+                if ($this->ion_auth->is_admin()) {
+                    if (strtotime($from) <= strtotime($project['project_finished']) && strtotime($to) >= strtotime($project['project_finished']) && $project['form_template'] == 44 && $project['form_completed'] == 1) {
 
-                    foreach ($questions as $key2 => $question) {
-                        $answers[$key] = $this->Question_model->get_project_question_answers($question['id']);
-                        foreach ($answers[$key] as $key3 => $answer) {
+                        $questions = $this->Question_model->get_project_questions($project['project_id']);
 
-                            if ($question['question_type'] != 'textarea' && $answer['answer_question'] == $question['id']) {
+                        foreach ($questions as $key2 => $question) {
+                            $answers[$key] = $this->Question_model->get_project_question_answers($question['id']);
+                            foreach ($answers[$key] as $key3 => $answer) {
 
-                                $data[$key2]['question_label'] = $questions[$key2]['question_label'];
-                                $data[$key2]['answers'][$key3] = $answer['answer_value'];
+                                if ($question['question_type'] != 'textarea' && $answer['answer_question'] == $question['id']) {
 
-                                $data[$key2]['scores'][$key][$key3] = $answer['answer_selected'];
+                                    $data[$key2]['question_label'] = $questions[$key2]['question_label'];
+                                    $data[$key2]['answers'][$key3] = $answer['answer_value'];
+
+                                    $data[$key2]['scores'][$key][$key3] = $answer['answer_selected'];
+                                }
                             }
                         }
-                    }
 
+                    }
+                } else {
+                    if (strtotime($from) <= strtotime($project['project_finished']) && strtotime($to) >= strtotime($project['project_finished']) && $project['form_template'] == 44 && $project['form_completed'] == 1 &&
+                        ($this->ion_auth->user()->row()->id == $developerToProject[0]['id_user'] ||
+                            $this->ion_auth->user()->row()->id == $project['project_client'] ||
+                            $this->ion_auth->user()->row()->company == $project['project_agency'])
+                    ) {
+
+                        $questions = $this->Question_model->get_project_questions($project['project_id']);
+
+                        foreach ($questions as $key2 => $question) {
+                            $answers[$key] = $this->Question_model->get_project_question_answers($question['id']);
+                            foreach ($answers[$key] as $key3 => $answer) {
+
+                                if ($question['question_type'] != 'textarea' && $answer['answer_question'] == $question['id']) {
+
+                                    $data[$key2]['question_label'] = $questions[$key2]['question_label'];
+                                    $data[$key2]['answers'][$key3] = $answer['answer_value'];
+
+                                    $data[$key2]['scores'][$key][$key3] = $answer['answer_selected'];
+                                }
+                            }
+                        }
+
+                    }
                 }
             }
         } else {
@@ -182,24 +259,53 @@ class Reports extends MY_Controller
         $projectsOfDev = $this->Projects_model->get_developer_projects($developerId);
 
         foreach ($projectsOfDev as $key => $project) {
-            if (strtotime($from) <= strtotime($project['project_finished']) && strtotime($to) >= strtotime($project['project_finished']) && $project['form_template'] == 44 && $project['form_completed'] == 1 && $project['project_status'] == 1) {
-                $questions = $this->Question_model->get_project_questions($project['project_id']);
 
-                foreach ($questions as $key2 => $question) {
-                    $answers[$key] = $this->Question_model->get_project_question_answers($question['id']);
-                    foreach ($answers[$key] as $key3 => $answer) {
+            $developerToProject = $this->Projects_model->get_developers($project['project_id'])->result_array();
 
-                        if ($question['question_type'] != 'textarea' && $answer['answer_question'] == $question['id']) {
+            if ($this->ion_auth->is_admin()) {
+                if (strtotime($from) <= strtotime($project['project_finished']) && strtotime($to) >= strtotime($project['project_finished']) && $project['form_template'] == 44 && $project['form_completed'] == 1 && $project['project_status'] == 1) {
+                    $questions = $this->Question_model->get_project_questions($project['project_id']);
 
-                            $data[$key2]['question_label'] = $questions[$key2]['question_label'];
-                            $data[$key2]['answers'][$key3] = $answer['answer_value'];
+                    foreach ($questions as $key2 => $question) {
+                        $answers[$key] = $this->Question_model->get_project_question_answers($question['id']);
+                        foreach ($answers[$key] as $key3 => $answer) {
 
-                            $data[$key2]['scores'][$key][$key3] = $answer['answer_selected'];
+                            if ($question['question_type'] != 'textarea' && $answer['answer_question'] == $question['id']) {
+
+                                $data[$key2]['question_label'] = $questions[$key2]['question_label'];
+                                $data[$key2]['answers'][$key3] = $answer['answer_value'];
+
+                                $data[$key2]['scores'][$key][$key3] = $answer['answer_selected'];
+                            }
                         }
                     }
                 }
+            } else {
+                if (strtotime($from) <= strtotime($project['project_finished']) && strtotime($to) >= strtotime($project['project_finished']) && $project['form_template'] == 44 && $project['form_completed'] == 1 && $project['project_status'] == 1 &&
+                    ($this->ion_auth->user()->row()->id == $developerToProject[0]['id_user'] ||
+                        $this->ion_auth->user()->row()->id == $project['project_client'] ||
+                        $this->ion_auth->user()->row()->company == $project['project_agency']
+                    )
+                ) {
 
+                    $questions = $this->Question_model->get_project_questions($project['project_id']);
+
+                    foreach ($questions as $key2 => $question) {
+                        $answers[$key] = $this->Question_model->get_project_question_answers($question['id']);
+                        foreach ($answers[$key] as $key3 => $answer) {
+
+                            if ($question['question_type'] != 'textarea' && $answer['answer_question'] == $question['id']) {
+
+                                $data[$key2]['question_label'] = $questions[$key2]['question_label'];
+                                $data[$key2]['answers'][$key3] = $answer['answer_value'];
+
+                                $data[$key2]['scores'][$key][$key3] = $answer['answer_selected'];
+                            }
+                        }
+                    }
+                }
             }
+
         }
 
         header('Content-Type: application/json');
@@ -260,12 +366,19 @@ class Reports extends MY_Controller
 
             $projects = $this->Projects_model->get_all_projects_done();
 
-            $viewProjects = [];
+            $viewClients = [];
             foreach ($projects as $key => $project) {
-                array_push($viewProjects, $project['project_final_client']);
+                if ($this->ion_auth->is_admin()) {
+                    array_push($viewClients, $project['project_final_client']);
+                } else {
+                    $developerToProject = $this->Projects_model->get_developers($project['project_id'])->result_array();
+                    if ($this->ion_auth->user()->row()->id == $developerToProject[0]['id_user'] || $this->ion_auth->user()->row()->id == $project['project_client'] || $this->ion_auth->user()->row()->company == $project['project_agency']) {
+                        array_push($viewClients, $project['project_final_client']);
+                    }
+                }
             }
 
-            $this->data['viewProjects'] = array_unique($viewProjects);
+            $this->data['viewClients'] = array_unique($viewClients);
 
             $this->render('auth/reports_client');
         }
@@ -277,9 +390,90 @@ class Reports extends MY_Controller
             // redirect them to the login page
             redirect('user/login', 'refresh');
         } else {
-            $this->data['developers'] = $this->Projects_model->getDevelopers();
+            $viewDevelopers = [];
+            $developersId = [];
+
+            $developers = $this->Projects_model->getDevelopers();
+
+            if ($this->ion_auth->is_admin()) {
+                $this->data['developers'] = $developers;
+
+            } elseif ($this->ion_auth->get_users_groups()->row()->name == 'developers') {
+
+                $projects = $this->Projects_model->get_all_projects_done();
+
+                foreach ($projects as $key => $project) {
+
+                    $developerToProject = $this->Projects_model->get_developers($project['project_id'])->result_array();
+
+                    if ($this->ion_auth->user()->row()->id == $developerToProject[0]['id_user']) {
+
+//                        array_push($viewDevelopers, $developerToProject[0]['id_user']);
+                        $idUser = $developerToProject[0]['id_user'];
+                        array_push($developersId, $idUser);
+                    }
+                }
+
+                $this->data['developers'] = array_unique($developersId);
+
+            } elseif ($this->ion_auth->get_users_groups()->row()->name == 'account') {
+
+                $projects = $this->Projects_model->get_all_projects_done();
+
+                foreach ($projects as $key => $project) {
+
+                    $developerToProject = $this->Projects_model->get_developers($project['project_id'])->result_array();
+
+                    if ($this->ion_auth->user()->row()->id == $project['project_client']) {
+
+//                        array_push($viewDevelopers, $developerToProject[0]['id_user']);
+                        $idUser = $developerToProject[0]['id_user'];
+                        array_push($developersId, $idUser);
+                    }
+                }
+
+                $this->data['developers'] = array_unique($developersId);
+
+            } elseif ($this->ion_auth->get_users_groups()->row()->name == 'agency-director') {
+
+                $projects = $this->Projects_model->get_all_projects_done();
+
+                foreach ($projects as $key => $project) {
+
+                    $developerToProject = $this->Projects_model->get_developers($project['project_id'])->result_array();
+
+                    if ($this->ion_auth->user()->row()->company == $project['project_agency']) {
+
+//                        array_push($viewDevelopers, $developerToProject[0]['id_user']);
+                        $idUser = $developerToProject[0]['id_user'];
+                        array_push($developersId, $idUser);
+                    }
+                }
+
+                $this->data['developers'] = array_unique($developersId);
+            }
 
             $this->render('auth/reports_developer');
+        }
+    }
+
+    function financial()
+    {
+        if (!$this->ion_auth->logged_in()) {
+            // redirect them to the login page
+            redirect('user/login', 'refresh');
+        } else {
+            $this->data['projects'] = null;
+            if ($this->input->server('REQUEST_METHOD') == 'POST') {
+
+                $from = $this->input->post('financialFrom');
+                $to = $this->input->post('financialTo');
+
+                $this->data['projects'] = $this->Reports_model->get_financial_data($from, $to);
+
+            }
+
+            $this->render('auth/reports_financial');
         }
     }
 

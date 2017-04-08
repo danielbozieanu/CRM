@@ -215,4 +215,13 @@ class Projects_model extends CI_Model
         $this->db->set('count', $count);
         $this->db->update('reminders');
     }
+
+    function get_final_clients(){
+        $this->db->select('project_final_client');
+        $this->db->distinct('project_final_client');
+        $this->db->group_by('project_final_client');
+        $this->db->from('projects');
+
+        return $this->db->get()->result_array();
+    }
 }

@@ -3,6 +3,7 @@
     <li><?php echo anchor("reports/client", 'By Client'); ?></li>
     <li ><?php echo anchor("reports/developer", 'By Developer'); ?></li>
     <li class="active"><?php echo anchor("reports/daterange", 'By Date Range'); ?></li>
+    <li><?php echo anchor("reports/financial", 'Financial by Date Range'); ?></li>
 
 </ul>
 <br>
@@ -13,15 +14,7 @@
         </div>
     </div>
     <div class="row">
-        <div class="col-xs-12 col-sm-4">
-            <div class="input-group">
-                <div class="input-group-addon">
-                    <i class="fa fa-calendar"></i>
-                </div>
-                <input type="text" class="form-control pull-right" id="daterangeSelect">
-            </div>
-        </div>
-        <div class="col-xs-12 col-sm-4">
+        <div class="col-xs-12 col-sm-10">
             <div class="input-group">
                 <div class="input-group-addon">
                     <i class="fa fa-calendar"></i>

@@ -76,7 +76,6 @@
                                        <i class="fa fa-calendar"></i>
                                    </div>
                                    <input required id="datepicker" name="project_start_date" type="text" class="form-control pull-right" name="project_start_date" value="<?php echo $this->input->post('project_start_date'); ?>"/>
-
                                </div>
                            </div>
                        </div>
@@ -97,7 +96,7 @@
                            <div class="form-group">
                                <label for="project_value">Project Value</label>
                                <div class="input-group">
-                                   <input required type="text" class="form-control" name="project_value" id="project_value" value="<?php echo $this->input->post('project_value'); ?>">
+                                   <input type="text" class="form-control" name="project_value" id="project_value" value="<?php echo $this->input->post('project_value'); ?>">
                                    <span class="input-group-addon"><i class="fa fa-euro"></i></span>
                                </div>
                            </div>
@@ -107,7 +106,7 @@
                            <div class="form-group">
                                <label for="project_costs">Project Costs</label>
                                <div class="input-group">
-                                   <input required type="text" class="form-control" name="project_costs" id="project_costs" value="<?php echo $this->input->post('project_value'); ?>">
+                                   <input type="text" class="form-control" name="project_costs" id="project_costs" value="<?php echo $this->input->post('project_value'); ?>">
                                    <span class="input-group-addon"><i class="fa fa-euro"></i></span>
                                </div>
                            </div>

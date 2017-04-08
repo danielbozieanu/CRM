@@ -47,7 +47,7 @@ class Feedback_model extends CI_Model
     public function get_feedback_text()
     {
         $this->db->from('answers_project');
-        $this->db->select('answers_project.*, projects.*, users.first_name as accountFirstName, users.last_name as accountLastName, agencies.agency_name as agency, users_proiecte.id_user as developer');
+        $this->db->select('answers_project.*, projects.*, users.id as accountId, users.first_name as accountFirstName, users.last_name as accountLastName, agencies.agency_name as agency, agencies.id as agency_id , users_proiecte.id_user as developer');
         $this->db->where('answers_project.feedback_text', 1);
         $this->db->join('projects', 'projects.project_id = answers_project.answer_project');
         $this->db->join('users', 'users.id = projects.project_client');

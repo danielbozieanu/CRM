@@ -91,6 +91,7 @@ class Projects extends MY_Controller
             if ($projects) {
 
                 foreach ($projects as $project) {
+                    $isDisabled = "";
 
                     //Check project status
                     if ($project->project_status == 1) {
@@ -115,32 +116,106 @@ class Projects extends MY_Controller
                         $this->form_status = '<span class="label label-primary">Pending</span>';
                     }
 
+                    if ($project->form_completed == 1 || $this->ion_auth->get_users_groups()->row()->name != 'admin') {
+                        $isDisabled = "disabled";
+                    }
+
                     //Id of the project
                     $projectClientId = $project->project_client;
 
                     //Get the client of the project
                     $client = $this->ion_auth->user($projectClientId)->row();
 
-                    $this->table->add_row(($i += 1) . '.',
 
-                        $project->project_name,
+                    if ($this->ion_auth->is_admin()) {
+                        $this->table->add_row($project->project_id,
 
-                        $client->company,
+                            $project->project_name,
 
-                        $this->status,
+                            $this->Agency_model->get_agency($client->company)['agency_name'],
 
-                        $this->form_status,
+                            $this->status,
 
-                        anchor('projects/view/' . $project->project_id, '<i class="fa fa-eye"></i>', 'class="btn btn-primary btn-xs" data-skin="skin-yellow"'),
+                            $this->form_status,
 
-                        anchor('projects/edit/' . $project->project_id, '<i class="fa fa-pencil"></i>', 'class="btn btn-warning btn-xs" data-skin="skin-yellow"'),
+                            anchor('projects/view/' . $project->project_id, '<i class="fa fa-eye"></i>', 'class="btn btn-primary btn-xs" data-skin="skin-yellow"'),
 
-                        $this->send_form_button,
+                            anchor('projects/edit/' . $project->project_id, '<i class="fa fa-pencil"></i>', 'class="btn btn-warning btn-xs ' . $isDisabled . '" data-skin="skin-yellow"'),
 
-                        '<a href=""  class="btn btn-danger btn-xs" data-toggle="modal" onclick="confirm_modal(\'' . site_url('projects/remove/' . $project->project_id) . '\',\'You want to delete the project?\',\'Yes, delete it.\',\'modal-danger\')" > <i class="fa fa-trash-o"></i>  </a>'
+                            $this->send_form_button,
 
-                    );
+                            '<a href=""  class="btn btn-danger btn-xs" data-toggle="modal" onclick="confirm_modal(\'' . site_url('projects/remove/' . $project->project_id) . '\',\'You want to delete the project?\',\'Yes, delete it.\',\'modal-danger\')" > <i class="fa fa-trash-o"></i>  </a>'
 
+                        );
+                    } elseif ($this->ion_auth->get_users_groups()->row()->name == 'developers') {
+                        $developerToProject = $this->Projects_model->get_developers($project->project_id)->result_array();
+
+                        if ($this->ion_auth->user()->row()->id == $developerToProject[0]['id_user']) {
+                            $this->table->add_row(($i += 1) . '.',
+
+                                $project->project_name,
+
+                                $this->Agency_model->get_agency($client->company)['agency_name'],
+
+                                $this->status,
+
+                                $this->form_status,
+
+                                anchor('projects/view/' . $project->project_id, '<i class="fa fa-eye"></i>', 'class="btn btn-primary btn-xs" data-skin="skin-yellow"'),
+
+                                anchor('projects/edit/' . $project->project_id, '<i class="fa fa-pencil"></i>', 'class="btn btn-warning btn-xs ' . $isDisabled . '" data-skin="skin-yellow"'),
+
+                                $this->send_form_button,
+
+                                '<a href=""  class="btn btn-danger btn-xs" data-toggle="modal" onclick="confirm_modal(\'' . site_url('projects/remove/' . $project->project_id) . '\',\'You want to delete the project?\',\'Yes, delete it.\',\'modal-danger\')" > <i class="fa fa-trash-o"></i>  </a>'
+
+                            );
+                        }
+                    } elseif ($this->ion_auth->get_users_groups()->row()->name == 'account') {
+                        if ($this->ion_auth->user()->row()->company == $this->Agency_model->get_agency($client->company)['id']) {
+                            $this->table->add_row(($i += 1) . '.',
+
+                                $project->project_name,
+
+                                $this->Agency_model->get_agency($client->company)['agency_name'],
+
+                                $this->status,
+
+                                $this->form_status,
+
+                                anchor('projects/view/' . $project->project_id, '<i class="fa fa-eye"></i>', 'class="btn btn-primary btn-xs" data-skin="skin-yellow"'),
+
+                                anchor('projects/edit/' . $project->project_id, '<i class="fa fa-pencil"></i>', 'class="btn btn-warning btn-xs ' . $isDisabled . '" data-skin="skin-yellow"'),
+
+                                $this->send_form_button,
+
+                                '<a href=""  class="btn btn-danger btn-xs" data-toggle="modal" onclick="confirm_modal(\'' . site_url('projects/remove/' . $project->project_id) . '\',\'You want to delete the project?\',\'Yes, delete it.\',\'modal-danger\')" > <i class="fa fa-trash-o"></i>  </a>'
+
+                            );
+                        }
+                    }elseif ($this->ion_auth->get_users_groups()->row()->name == 'agency-director') {
+                        if ($this->ion_auth->user()->row()->company == $this->Agency_model->get_agency($client->company)['id']) {
+                            $this->table->add_row(($i += 1) . '.',
+
+                                $project->project_name,
+
+                                $this->Agency_model->get_agency($client->company)['agency_name'],
+
+                                $this->status,
+
+                                $this->form_status,
+
+                                anchor('projects/view/' . $project->project_id, '<i class="fa fa-eye"></i>', 'class="btn btn-primary btn-xs" data-skin="skin-yellow"'),
+
+                                anchor('projects/edit/' . $project->project_id, '<i class="fa fa-pencil"></i>', 'class="btn btn-warning btn-xs ' . $isDisabled . '" data-skin="skin-yellow"'),
+
+                                $this->send_form_button,
+
+                                '<a href=""  class="btn btn-danger btn-xs" data-toggle="modal" onclick="confirm_modal(\'' . site_url('projects/remove/' . $project->project_id) . '\',\'You want to delete the project?\',\'Yes, delete it.\',\'modal-danger\')" > <i class="fa fa-trash-o"></i>  </a>'
+
+                            );
+                        }
+                    }
                 }
             } else {
                 $this->data['noProjects'] = 'There are no projects yet!';
@@ -177,45 +252,49 @@ class Projects extends MY_Controller
             // redirect them to the login page
             redirect('user/login', 'refresh');
         } else {
-            //Get clients - group with id 2 (account)
-            $this->data['clients'] = $this->ion_auth->users(2)->result();
+            if ($this->ion_auth->is_admin()) {
+                //Get clients - group with id 2 (account)
+                $this->data['clients'] = $this->ion_auth->users(2)->result();
 
-            $this->load->library('form_validation');
-            $this->form_validation->set_rules('project_name', 'Name', 'required',
-                array('required' => 'Please type a name for project')
-            );
-            $this->form_validation->set_rules('project_client', 'Client', 'required|greater_than[0]',
-                array('greater_than' => 'Please select a client')
-            );
-            $this->form_validation->set_rules('project_start_date', 'Project start date', 'required',
-                array('required' => 'Please insert start date for project')
-            );
-
-            //Verify if we have POST and if the form is validated
-            if (isset($_POST) && count($_POST) > 0 && $this->form_validation->run()) {
-
-                $projectAgency = $this->ion_auth->user($this->input->post('project_client'))->result()[0]->company;
-
-                $params = array(
-                    'project_name' => $this->input->post('project_name'),
-                    'project_client' => $this->input->post('project_client'),
-                    'project_created' => $this->input->post('project_start_date'),
-                    'project_estimate' => $this->input->post('project_estimation'),
-                    'project_final_client' => $this->input->post('project_final_client'),
-                    'project_value' => $this->input->post('project_value'),
-                    'project_costs' => $this->input->post('project_costs'),
-                    'project_status' => $this->input->post('project_status'),
-                    'form_slug' => random_string('alnum', 16),
-                    'project_agency' => $projectAgency
+                $this->load->library('form_validation');
+                $this->form_validation->set_rules('project_name', 'Name', 'required',
+                    array('required' => 'Please type a name for project')
+                );
+                $this->form_validation->set_rules('project_client', 'Client', 'required|greater_than[0]',
+                    array('greater_than' => 'Please select a client')
+                );
+                $this->form_validation->set_rules('project_start_date', 'Project start date', 'required',
+                    array('required' => 'Please insert start date for project')
                 );
 
-                //Get developers assigned to project
-                $developersInput = $this->input->post('developerToProject');
+                //Verify if we have POST and if the form is validated
+                if (isset($_POST) && count($_POST) > 0 && $this->form_validation->run() && $this->ion_auth->is_admin()) {
 
-                $this->Projects_model->add_projects($params, $developersInput);
-                redirect('projects/index');
+                    $projectAgency = $this->ion_auth->user($this->input->post('project_client'))->result()[0]->company;
+
+                    $params = array(
+                        'project_name' => $this->input->post('project_name'),
+                        'project_client' => $this->input->post('project_client'),
+                        'project_created' => $this->input->post('project_start_date'),
+                        'project_estimate' => $this->input->post('project_estimation'),
+                        'project_final_client' => $this->input->post('project_final_client'),
+                        'project_value' => $this->input->post('project_value'),
+                        'project_costs' => $this->input->post('project_costs'),
+                        'project_status' => $this->input->post('project_status'),
+                        'form_slug' => random_string('alnum', 16),
+                        'project_agency' => $projectAgency
+                    );
+
+                    //Get developers assigned to project
+                    $developersInput = $this->input->post('developerToProject');
+
+                    $this->Projects_model->add_projects($params, $developersInput);
+                    redirect('projects/index');
+                } else {
+                    $this->render('auth/projects_add');
+                }
             } else {
-                $this->render('auth/projects_add');
+                redirect('projects/index');
             }
         }
     }
@@ -225,7 +304,6 @@ class Projects extends MY_Controller
      */
     function edit($id)
     {
-
         if (!$this->ion_auth->logged_in()) {
             // redirect them to the login page
             redirect('user/login', 'refresh');
@@ -243,8 +321,6 @@ class Projects extends MY_Controller
                     //Form template
                     $formId = $project['form_template'];
                     $formData = array_merge($this->Form_model->get_form_questions($this->input->post('form_template')), $this->Form_model->get_textarea_questions($this->input->post('form_template')));
-//
-
 
                     //Check if form template's deleting current answers
                     if ($this->input->post('form_template') != $formId && $this->input->post('form_template') != NULL) {
@@ -253,8 +329,6 @@ class Projects extends MY_Controller
 
                     //Adding answers to project
                     if ((!$formId || ($this->input->post('form_template') != $formId && $this->input->post('form_template') != NULL)) && !$project['form_completed']) {
-
-//                        var_dump( $formData); die();
 
                         foreach ($formData as $question) {
 
@@ -352,8 +426,12 @@ class Projects extends MY_Controller
                     $this->data['projects'] = $this->Projects_model->get_project($id);
                     $this->render('auth/projects_edit');
                 }
-            } else
+            } else {
+                $this->load->library('user_agent');
+                header("refresh:3;url=../");
                 show_error('The projects you are trying to edit does not exist or you are not administrator.');
+            }
+
         }
     }
 
@@ -374,6 +452,8 @@ class Projects extends MY_Controller
                 redirect('projects/index');
             } else
                 show_error('The projects you are trying to delete does not exist or you are not administrator.');
+            header("refresh:5;url=../");
+
         }
     }
 
@@ -486,5 +566,18 @@ class Projects extends MY_Controller
 
             redirect('projects/view/' . $id);
         }
+    }
+
+    public function clients()
+    {
+        $this->data['page_title'] = 'CRM LOW - Final clients';
+        $this->data['page_description'] = 'Final clients';
+
+        $this->load->model('Projects_model');
+        $this->load->model('Agency_model');
+
+        $this->data['clients'] = $this->Projects_model->get_all_projects_nd();
+
+        $this->render('auth/final_clients');
     }
 }

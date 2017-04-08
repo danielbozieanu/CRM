@@ -162,8 +162,9 @@ class Users extends Auth_Controller {
                 'options' => array(
                     ''  => '--- SELECT GROUP ---',
                     '2' => 'Account',
+                    '6' => 'Agency Director',
                     '5' => 'Developer',
-                    '1' => 'Administrator'
+                    '1' => 'Administrator',
                 )
             );
             $this->data['password'] = array(

@@ -100,4 +100,15 @@ class Reports_model extends CI_Model
         }
 
     }
+
+    function get_financial_data($from, $to){
+        $this->db->select('projects.*');
+        $this->db->from('projects');
+        $this->db->where('projects.project_finished >=', $from);
+        $this->db->where('projects.project_finished <=', $to);
+
+        $query = $this->db->get();
+
+        return $query->result();
+    }
 }

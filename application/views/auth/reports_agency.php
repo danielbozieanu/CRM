@@ -3,6 +3,7 @@
     <li><?php echo anchor("reports/client", 'By Client'); ?></li>
     <li><?php echo anchor("reports/developer", 'By Developer'); ?></li>
     <li><?php echo anchor("reports/daterange", 'By Date Range'); ?></li>
+    <li><?php echo anchor("reports/financial", 'Financial by Date Range'); ?></li>
 
 </ul>
 <br>
@@ -17,7 +18,13 @@
             <select name="" id="agencySelect" class="form-control">
                 <option value="000">---</option>
                 <?php foreach ($agencies as $agency): ?>
-                    <option value="<?php echo $agency['id']; ?>"><?php echo $agency['agency_name'] ?></option>
+                    <?php if ($this->ion_auth->is_admin()): ?>
+                        <option value="<?php echo $agency['id']; ?>"><?php echo $agency['agency_name'] ?></option>
+                    <?php else: ?>
+                        <?php if ($this->ion_auth->user()->row()->company == $agency['id']) : ?>
+                            <option value="<?php echo $agency['id']; ?>"><?php echo $agency['agency_name'] ?></option>
+                        <?php endif; ?>
+                    <?php endif; ?>
                 <?php endforeach; ?>
             </select>
         </div>
@@ -61,7 +68,7 @@
 
         $.ajax({
             type: 'POST',
-            url: '/reports/get_agency_data/' + $('#agencySelect').val() + '/'  + $('#daterangeSelect').val().split(" - ")[0] + '/' + $('#daterangeSelect').val().split(" - ")[1],
+            url: '/reports/get_agency_data/' + $('#agencySelect').val() + '/' + $('#daterangeSelect').val().split(" - ")[0] + '/' + $('#daterangeSelect').val().split(" - ")[1],
             error: function () {
                 $('#reports-wrapper').empty();
 

@@ -3,6 +3,7 @@
     <li class="active"><?php echo anchor("reports/client", 'By Client'); ?></li>
     <li><?php echo anchor("reports/developer", 'By Developer'); ?></li>
     <li><?php echo anchor("reports/daterange", 'By Date Range'); ?></li>
+    <li><?php echo anchor("reports/financial", 'Financial by Date Range'); ?></li>
 </ul>
 <br>
 <div class="form-group">
@@ -15,8 +16,8 @@
         <div class="col-xs-12 col-sm-4">
             <select name="" id="clientSelect" class="form-control">
                 <option value="000">---</option>
-                <?php foreach ($viewProjects as $project): ?>
-                    <option value="<?php echo $project; ?>"><?php echo $project; ?></option>
+                <?php foreach ($viewClients as $client): ?>
+                    <option value="<?php echo $client; ?>"><?php echo $client; ?></option>
                 <?php endforeach; ?>
             </select>
         </div>

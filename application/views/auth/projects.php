@@ -14,13 +14,16 @@
         <h4><i class="icon fa fa-check"></i>Alert!</h4>
         <?php echo $noProjects; ?>
     </div>
-    <p>
-        <a href="<?php echo site_url('projects/add'); ?>" class="btn btn-success">Add new project</a>
-    </p>
+        <p>
+            <a href="<?php echo site_url('projects/add'); ?>" class="btn btn-success">Add new project</a>
+        </p>
 <?php else: ?>
-<p>
-    <a href="<?php echo site_url('projects/add'); ?>" class="btn btn-success">Add new project</a>
-</p>
+
+    <?php if ($this->ion_auth->is_admin()): ?>
+        <p>
+            <a href="<?php echo site_url('projects/add'); ?>" class="btn btn-success">Add new project</a>
+        </p>
+    <?php endif; ?>
 
 <div class="row">
     <div class="col-md-12">

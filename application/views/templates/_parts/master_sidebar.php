@@ -33,6 +33,7 @@
         <ul class="sidebar-menu">
             <li class="header">MAIN MENU</li>
             <!-- Optionally, you can add icons to the links -->
+            <?php if ($this->ion_auth->is_admin()): ?>
             <li class="<?php if ($this->uri->segment(1) == NULL) {
                 echo "active";
             } ?>"><?php echo anchor("/", ' <i class="fa fa-tachometer"></i> <span>Dashboard</span>'); ?>
@@ -43,20 +44,28 @@
             } ?>"><?php echo anchor("agency/", ' <i class="fa fa-building-o" aria-hidden="true"></i> <span>Agencies</span>'); ?>
             </li>
 
+            <li class="<?php if ($this->uri->segment(2) == "clients") {
+                echo "active";
+            } ?>"><?php echo anchor("projects/clients", ' <i class="fa fa-suitcase"></i> <span>Final clients</span>'); ?>
+            </li>
+
             <li class="<?php if ($this->uri->segment(1) == "users") {
                 echo "active";
             } ?>"><?php echo anchor("users/", ' <i class="fa fa-users"></i> <span>Users</span>'); ?>
             </li>
+            <?php endif; ?>
 
-            <li class="<?php if ($this->uri->segment(1) == "projects") {
+            <li class="<?php if (($this->uri->segment(1) == "projects" && $this->uri->segment(2) == "") || ($this->uri->segment(1) == "projects" && $this->uri->segment(2) == "add") || ($this->uri->segment(1) == "projects" && $this->uri->segment(2) == "edit")) {
                 echo "active";
             } ?>"><?php echo anchor("projects/", ' <i class="fa fa-suitcase"></i> <span>Projects</span>'); ?>
             </li>
 
+            <?php if ($this->ion_auth->is_admin()): ?>
             <li class="<?php if ($this->uri->segment(1) == "form") {
                 echo "active";
             } ?>"><?php echo anchor("form/", ' <i class="fa fa-check-square-o"></i> <span>Forms</span>'); ?>
             </li>
+            <?php endif; ?>
 
             <li class="<?php if ($this->uri->segment(1) == "feedback") {
                 echo "active";

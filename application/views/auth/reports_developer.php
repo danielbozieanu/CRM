@@ -3,6 +3,7 @@
     <li><?php echo anchor("reports/client", 'By Client'); ?></li>
     <li class="active"><?php echo anchor("reports/developer", 'By Developer'); ?></li>
     <li><?php echo anchor("reports/daterange", 'By Date Range'); ?></li>
+    <li><?php echo anchor("reports/financial", 'Financial by Date Range'); ?></li>
 
 </ul>
 <br>
@@ -17,9 +18,27 @@
             <!--            <input type="text" name="" id="clientSelect" class="form-control" />-->
             <select name="" id="developerSelect" class="form-control">
                 <option value="000">---</option>
-                <?php foreach ($developers as $developer): ?>
-                    <option value="<?php echo $developer['id']; ?>"><?php echo $developer['first_name'] . ' ' . $developer['last_name']; ?></option>
-                <?php endforeach; ?>
+                <?php if ($this->ion_auth->is_admin()): ?>
+
+                    <?php foreach ($developers as $developer): ?>
+                        <option value="<?php echo $developer['id']; ?>"><?php echo $developer['first_name'] . ' ' . $developer['last_name']; ?></option>
+                    <?php endforeach; ?>
+
+                <?php elseif ($this->ion_auth->get_users_groups()->row()->name == 'developer'): ?>
+
+                    <?php foreach ($developers as $key => $developer): ?>
+                        <?php if ($developer == $this->ion_auth->user()->row()->id): ?>
+                            <option value="<?php echo $developer; ?>"><?php echo $this->ion_auth->user($developer)->row()->first_name . ' ' . $this->ion_auth->user($developer)->row()->last_name; ?></option>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+
+                <?php else: ?>
+
+                    <?php foreach ($developers as $key => $developer): ?>
+                        <option value="<?php echo $developer; ?>"><?php echo $this->ion_auth->user($developer)->row()->first_name . ' ' . $this->ion_auth->user($developer)->row()->last_name; ?></option>
+                    <?php endforeach; ?>
+
+                <?php endif; ?>
             </select>
         </div>
         <div class="col-xs-12 col-sm-4">
@@ -63,7 +82,7 @@
 
         $.ajax({
             type: 'POST',
-            url: '/reports/get_developer_data/' + $('#developerSelect').val() + '/'  + $('#daterangeSelect').val().split(" - ")[0] + '/' + $('#daterangeSelect').val().split(" - ")[1],
+            url: '/reports/get_developer_data/' + $('#developerSelect').val() + '/' + $('#daterangeSelect').val().split(" - ")[0] + '/' + $('#daterangeSelect').val().split(" - ")[1],
             error: function () {
                 $('#reports-wrapper').empty();
 

@@ -49,7 +49,7 @@
                 <div class="form-group">
                     <label for="nume">Agency:</label>
                     <select disabled name="client" class="form-control">
-                        <option><?php echo $this->ion_auth->user($projects['project_client'])->row()->company; ?></option>
+                        <option><?php echo $this->Agency_model->get_agency($this->ion_auth->user($projects['project_client'])->row()->company)['agency_name']; ?></option>
                     </select>
                 </div>
             </div>

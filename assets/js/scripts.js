@@ -50,7 +50,11 @@ var validator = $('#form').validate({
     errorElement: 'span',
     errorClass: 'text-danger small error',
     errorPlacement: function (error, element) {
-        error.insertAfter(element);
+        if ( $(element).parent().hasClass('input-group') ){
+            error.insertAfter($(element).parent());
+        }else{
+            error.insertAfter(element);
+        }
     },
     messages: {}
 });
